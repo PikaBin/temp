@@ -6,8 +6,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const orderSchema = new Schema({
-  Orderitem: { type: Schema.Types.ObjectId, required: true, ref: 'Item' },
-  Ordercustomer: { type: Schema.Types.ObjectId, required: true, ref: 'Custom' },
+  name: String,
   OrderbuyTime: Date,
   Orderamount: Number,
 

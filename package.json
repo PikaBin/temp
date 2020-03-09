@@ -11,7 +11,9 @@
     "egg": "^2.15.1",
     "egg-mongoose": "^3.2.0",
     "egg-scripts": "^2.11.0",
-    "mongoose": "^5.8.6"
+    "md5": "^2.2.1",
+    "mongoose": "^5.8.6",
+    "svg-captcha": "^1.4.0"
   },
   "devDependencies": {
     "autod": "^3.0.1",

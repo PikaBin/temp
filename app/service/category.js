@@ -21,19 +21,14 @@ class CategoryService extends Service {
     // console.log(this); undefined
     const Category = await this.ctx.model.Category;
 
-    const categoryInstance = new Category({
-      categoryName: req.categoryName,
-      categoryIntrod: req.categoryIntrod,
-      categoryRule: req.categoryRule,
-    });
+    const categoryInstance = new Category(req);
     categoryInstance.save(err => {
       if (err) {
         // callback(err);
         console.log(err);
         return;
       }
-      // console.log('新建品类：' + categoryInstance);
-      // callback(null, categoryInstance);
+
     });
     return categoryInstance;
   }
