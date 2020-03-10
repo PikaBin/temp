@@ -49,9 +49,10 @@ class OperatorInfoController extends Controller {
    */
   async queryOperator() {
     // 获取前端数据
-    const req = await this.ctx.request.body;
+    const req = await this.ctx.query._id;
+    console.log('req数据:' + req);
     try {
-      const foundData = await this.service.operatorInfo.queryOperator(req);
+      const foundData = await this.service.operatorInfo.queryOperator();
       this.ctx.body = foundData;
       this.ctx.status = 201;
     } catch (err) {

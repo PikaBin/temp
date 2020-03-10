@@ -35,9 +35,10 @@ class OperatorInfo extends Service {
 
   }
 
-  async queryOperator(data) {
-    const Operator = await this.ctx.model.Operator;
-    const foundData = Operator.findById(data._id);
+  async queryOperator() {
+    const Operator = this.ctx.model.Operator;
+    const foundData = await Operator.findById(this.ctx.query._id);
+    console.log('foundData:' + foundData);
     return foundData;
   }
 }
