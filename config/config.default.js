@@ -42,6 +42,11 @@ module.exports = appInfo => {
     },
   };
 
+  // 解决跨域
+  exports.security = {
+    domainWhiteList: [ 'http://localhost:8000', 'http://localhost:3000' ],
+  };
+
 
   return {
     ...config,

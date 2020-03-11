@@ -21,7 +21,7 @@ class ToolService extends Service {
       height: 32,
       background: '#cc9966',
     });
-    this.ctx.session.code = captcha.text;
+    // this.ctx.session.code = captcha.text;
     return captcha;
   }
 

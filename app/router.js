@@ -8,6 +8,7 @@ module.exports = app => {
   router.get('/', controller.home.index);
   // 注册，登录
   router.post('/operator/signup', controller.login.signUp);
+  router.post('/operator/signin', controller.login.signIn); // 登录
 
   // 运营商基础信息管理
   router.post('/manager/addoperator', controller.operatorInfo.addOperator);

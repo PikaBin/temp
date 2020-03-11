@@ -49,12 +49,17 @@ class OperatorInfoController extends Controller {
    */
   async queryOperator() {
     // 获取前端数据
-    const req = await this.ctx.query._id;
-    console.log('req数据:' + req);
+    // const req = await this.ctx.query._id;
+    // console.log('req数据:' + req);
     try {
       const foundData = await this.service.operatorInfo.queryOperator();
-      this.ctx.body = foundData;
-      this.ctx.status = 201;
+      if (foundData) {
+        this.ctx.body = foundData;
+        this.ctx.status = 201;
+      } else {
+        this.ctx.body = '查无结果';
+      }
+
     } catch (err) {
       console.log(err);
       this.ctx.body = "页面出现了未知错误";
