@@ -67,11 +67,12 @@ class OperatorInfoController extends Controller {
   }
 
   async getPhoto() {
+    const id = this.ctx.query.id; // 暂时从前端通过查询参数 传入用户id，因为没有掌握session
     const photoPath = await this.ctx.service.fileupload.addImage();
     const Operator = this.ctx.model.Operator;
 
     try {
-      const result = await Operator.findByIdAndUpdate('5e6464861c4635383c381f5d', { legalPersonPhoto: photoPath }, function(err, doc) {
+      const result = await Operator.findByIdAndUpdate(id, { legalPersonPhoto: photoPath }, function(err, doc) {
         if (err) console.log(err);
         else {
           return doc;

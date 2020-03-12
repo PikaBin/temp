@@ -14,7 +14,7 @@ module.exports = app => {
   router.post('/manager/addoperator', controller.operatorInfo.addOperator);
   router.post('/manager/updateoperator', controller.operatorInfo.updateOperator);
   router.get('/manager/queryoperator', controller.operatorInfo.queryOperator);
-  router.post('/manager/addimage', controller.operatorInfo.getPhoto);
+  router.post('/manager/addimage', controller.operatorInfo.getPhoto); // 上传图片
 
 
   // 品类标签
