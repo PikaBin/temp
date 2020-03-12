@@ -21,6 +21,30 @@ module.exports = appInfo => {
   const userConfig = {
     // myAppName: 'egg',
   };
+  exports.security = {
+    csrf: {
+      enable: false,
+
+      // can be ctoken or referer or all
+      type: 'ctoken',
+      ignoreJSON: false,
+
+      // These config works when using ctoken type
+      useSession: false,
+      // can be function(ctx) or String
+      cookieDomain: undefined,
+      cookieName: 'csrfToken',
+      sessionName: 'csrfToken',
+      headerName: 'x-csrf-token',
+      bodyName: '_csrf',
+      queryName: '_csrf',
+
+      // These config works when using referer type
+      refererWhiteList: [
+        // 'eggjs.org'
+      ],
+    },
+  };
 
   config.upload = '/app/public/uploads';
 
