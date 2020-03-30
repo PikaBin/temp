@@ -21,39 +21,15 @@ module.exports = appInfo => {
   const userConfig = {
     // myAppName: 'egg',
   };
-  exports.security = {
-    csrf: {
-      enable: false,
-
-      // can be ctoken or referer or all
-      type: 'ctoken',
-      ignoreJSON: false,
-
-      // These config works when using ctoken type
-      useSession: false,
-      // can be function(ctx) or String
-      cookieDomain: undefined,
-      cookieName: 'csrfToken',
-      sessionName: 'csrfToken',
-      headerName: 'x-csrf-token',
-      bodyName: '_csrf',
-      queryName: '_csrf',
-
-      // These config works when using referer type
-      refererWhiteList: [
-        // 'eggjs.org'
-      ],
-    },
-  };
 
   config.upload = '/app/public/uploads';
 
   config.session = {
-    key: 'SESSION_ID',
-    maxAge: 1000 * 60 * 60 * 60, // 24h
+    key: 'vv', // key是存储在cookie中所有session值的合称；
+    maxAge: 1000 * 3600 * 24, // 24h
     httpOnly: true,
     encrypt: true,
-    renew: true, // 延长会话有效期
+    renew: false, // 延长会话有效期
   };
   // 配置数据库
   exports.mongoose = {

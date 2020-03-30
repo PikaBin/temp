@@ -35,7 +35,7 @@ class OperatorInfoController extends Controller {
     const req = await this.ctx.request.body;
     try {
       const updatedData = await this.service.operatorInfo.updateOperator(req);
-      console.log('controller');
+      console.log(updatedData);
       this.ctx.body = updatedData;
       this.ctx.status = 201;
     } catch (err) {

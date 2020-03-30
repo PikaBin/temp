@@ -14,26 +14,28 @@ module.exports = app => {
 
   const workOrderSchema = new Schema({
     _id: Schema.Types.ObjectId,
-    W_servicer: { type: Schema.Types.ObjectId, ref: 'Servicer' },
-    W_itemPartition: { type: Schema.Types.ObjectId, required: true, ref: 'Item' },
-    W_orderID: { type: Schema.Types.ObjectId, ref: 'Order' },
+    W_name: { type: String },
+    W_servicer: { type: String, ref: 'Servicer' },
+    W_itemPartition: { type: String, required: true, ref: 'Item' }, // 由于分区id删除，所以改为string
+    orderID: { type: String, ref: 'Order' },
     W_operatorID: { type: Schema.Types.ObjectId, ref: 'Operator' },
     W_state: { type: String, required: true },
     W_startTime: { type: Date },
     W_endTime: { type: Date },
     W_serverTime: { type: Date },
     requirement: { type: String },
-    log: {
-      _id: Schema.Types.ObjectId,
-      name: { type: String, required: true },
-      content: { type: String, required: true },
-      start: { type: Date, required: true },
-      end: { type: Date, required: true },
-      Servicer_feedback: { type: String, required: true },
-      Customer_feedback: { type: String, required: true },
-      deadline: { type: Date },
-      state: { type: String, required: true },
-    },
+    // log: {
+    //   _id: Schema.Types.ObjectId,
+    //   name: { type: String, required: true },
+    //   content: { type: String, required: true },
+    //   start: { type: Date, required: true },
+    //   end: { type: Date, required: true },
+    //   Servicer_feedback: { type: String, required: true },
+    //   Customer_feedback: { type: String },
+    //   deadline: { type: Date },
+    //   state: { type: String, required: true },
+    // },
+    log: Array,
   });
 
   return mongoose.model('Workorder', workOrderSchema);

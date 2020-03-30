@@ -11,9 +11,14 @@ class categoryController extends Controller {
     // const { ctx, service } = this;
     const data = this.ctx.request.body;
     try {
-      const categoryInstance = await this.service.category.addCategory(data);
-      this.ctx.status = 201;
-      this.ctx.body = categoryInstance;
+      if (this.ctx.session.userinfo) {
+        const categoryInstance = await this.service.category.addCategory(data);
+        this.ctx.status = 201;
+        this.ctx.body = categoryInstance;
+      } else {
+        this.ctx.body = '未登录';
+      }
+
     } catch (err) {
       console.log(err);
       this.ctx.body = '出现了未知错误';
