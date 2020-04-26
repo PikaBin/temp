@@ -26,13 +26,15 @@ class OperatorInfo extends Service {
   }
   /**
    * 更新前端数据应该分为两步，第一步展示原有的信息表单，前端进行修改完成，提交，第二步，后端更新数据库信息，重新定位到运营商信息页面
-   * @param {JSON} data 前端传入的运营商信息表单
+   * ...
    */
-  async updateOperator(data) {
+  async updateOperator() {
     const Operator = await this.ctx.model.Operator;
-    await Operator.findByIdAndUpdate(data._id, data); // 此处返回的记录为修改前的值
-    const updatedData = Operator.findById(data._id);
-    console.log('"更新"后的数据' + updatedData);
+    const data = await this.ctx.request.body;
+    // eslint-disable-next-line no-unused-vars
+    const temp = await Operator.findByIdAndUpdate(this.ctx.query._id, data); // 此处返回的记录为修改前的记录值
+    const updatedData = Operator.findById(this.ctx.query._id);
+    console.log('"更新"后的数据' + JSON.stringify(data));
     return updatedData;
 
   }

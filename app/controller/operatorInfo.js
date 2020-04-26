@@ -32,10 +32,11 @@ class OperatorInfoController extends Controller {
    */
   async updateOperator() {
     // 获取前端数据
-    const req = await this.ctx.request.body;
+    // const req = await this.ctx.request.body;
+    // console.log('前端数据' + req);
     try {
-      const updatedData = await this.service.operatorInfo.updateOperator(req);
-      console.log(updatedData);
+      const updatedData = await this.service.operatorInfo.updateOperator();
+      // console.log(updatedData);
       this.ctx.body = updatedData;
       this.ctx.status = 201;
     } catch (err) {
