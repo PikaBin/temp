@@ -1,3 +1,4 @@
+/* eslint-disable jsdoc/require-param */
 /* eslint-disable no-unused-vars */
 /**
  * 先实现单文件上传，
@@ -7,44 +8,30 @@
 
 const Controller = require('egg').Controller;
 const path = require('path');
-const fs = require('fs');
-const sendToWormhole = require('stream-wormhole');
+// const sendToWormhole = require('stream-wormhole');
+const mkdirp = require('mz-modules/mkdirp');
+// const sillyTime = require('silly-datetime');
 class UploadSingle extends Controller {
 
   /**
+   *  文件名称
    * 上传用户头像，写入数据库图片路径，并且将图片路径返回给前端
    */
-  async addImage() {
-    const { ctx } = this;
-    // 获取文件流
-    const readStream = await ctx.getFileStream();
-
-    // 获取文件名,包括扩展名
-    const filename = await path.basename(readStream.filename);
-
-    // 拼接上传的路径,注意这里 // 路径符号可能与服务器路径符号不一致,这里先暂时做测试使用
-    const upload_path = path.join('D:/images/', filename);
-    // fs.mkdirSync(this.config.upload, { recursive: true }); // 递归创建目录
-
-    // 如果路径不存在就创建
-    const stat = fs.statSync('D:/images/');
-    if (!stat.isDirectory()) {
-      fs.mkdirSync('D:/images/');
-    }
-
-    // 创建写入流
-    const writeStream = fs.createWriteStream(upload_path);
-
-    let result;
-    try {
-      result = await readStream.pipe(writeStream);
-    } catch (err) {
-    // 上传失败，销毁流
-      await sendToWormhole(readStream);
-      throw err;
-    }
-    return upload_path;
+  async makeUploadPath(filename) {
+    // // 获取当前日期
+    // const day = sillyTime.format(new Date(), 'YYYYMMDD');
+    // // 创建图片保存路径
+    // const dir = path.join(this.config.upload, day);
+    await mkdirp(this.config.upload);
+    // 毫秒数
+    const time = await new Date().getTime();
+    // 返回图片保存的路径
+    const uploadDir = path.join(this.config.upload, time + path.extname(filename));
+    return {
+      saveDir: uploadDir.slice(3).replace(/\\/g, '/'),
+      uploadDir,
+    };
   }
 }
-
 module.exports = UploadSingle;
+
