@@ -16,14 +16,15 @@ module.exports = app => {
     _id: Schema.Types.ObjectId,
     W_name: { type: String },
     W_servicer: { type: String, ref: 'Servicer' },
-    W_itemPartition: { type: String, required: true, ref: 'Item' }, // 由于分区id删除，所以改为string
+    W_itemPartition: { type: String, required: true }, // 由于分区id删除，所以改为string
     orderID: { type: String, ref: 'Order' },
     W_operatorID: { type: Schema.Types.ObjectId, ref: 'Operator' },
-    W_state: { type: String, required: true },
-    W_startTime: { type: Date },
-    W_endTime: { type: Date },
-    W_serverTime: { type: Date },
-    requirement: { type: String },
+    W_state: { type: String, required: true }, // 工单状态（0 – 结束 / 1 – 进行中 / 2 – 待分配 / 3 – 用户终止）
+    W_startTime: { type: Date }, // 工单产生时间
+    W_endTime: { type: Date }, // 工单结束时间
+    W_serverTime: { type: Date }, // 服务启动时间
+    requirement: { type: String }, // 下单客户特别的要求
+    customerPhone: String,
     // log: {
     //   _id: Schema.Types.ObjectId,
     //   name: { type: String, required: true },
@@ -35,7 +36,7 @@ module.exports = app => {
     //   deadline: { type: Date },
     //   state: { type: String, required: true },
     // },
-    log: Array,
+    log: Array, // 工单日志
   });
 
   return mongoose.model('Workorder', workOrderSchema);

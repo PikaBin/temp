@@ -6,6 +6,8 @@ module.exports = app => {
   const itemSchema = new Schema({
     _id: Schema.Types.ObjectId,
     itemName: { type: String, required: true },
+    itemPrice: { type: String },
+    itemImage: { type: String },
     itemCategoryID: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
     itemIntroduction: { type: String, required: true },
     itemState: { type: String, required: true },

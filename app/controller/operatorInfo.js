@@ -66,6 +66,9 @@ class OperatorInfoController extends Controller {
     }
   }
 
+  /**
+   * 前端上传头像
+   */
   async getPhoto() {
     const id = this.ctx.query.id; // 暂时从前端通过查询参数 传入用户id，因为没有掌握session
     const photoPath = await this.ctx.service.fileupload.addImage();

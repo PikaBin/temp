@@ -26,6 +26,8 @@ module.exports = app => {
   router.post('/manager/additem/', controller.item.addItem);
 
   // 工单管理
-  router.post('/manager/workorderadd', controller.workorder.workorderAdd);
+  router.get('/manager/neworder', controller.workorder.findOrder); // 返回新增订单
+  router.post('/manager/workorderadd', controller.workorder.workorderAdd); // 手动新增工单
+  router.get('/manager/workorderadd', controller.workorder.workorderAdd); // 返回系统自动新增的工单
 
 };

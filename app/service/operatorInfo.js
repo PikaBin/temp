@@ -30,7 +30,9 @@ class OperatorInfo extends Service {
    */
   async updateOperator(data) {
     const Operator = await this.ctx.model.Operator;
-    const updatedData = Operator.findByIdAndUpdate(data._id, data);
+    await Operator.findByIdAndUpdate(data._id, data); // 此处返回的记录为修改前的值
+    const updatedData = Operator.findById(data._id);
+    console.log('"更新"后的数据' + updatedData);
     return updatedData;
 
   }

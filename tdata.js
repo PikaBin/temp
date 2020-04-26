@@ -55,3 +55,5 @@
 // createOrder();
 'use strict';
 console.log('qwe'.toUpperCase());
+console.log(typeof (Date.now()));
+console.log(new Date().getTime());

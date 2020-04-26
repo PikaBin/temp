@@ -29,7 +29,7 @@ module.exports = appInfo => {
     maxAge: 1000 * 3600 * 24, // 24h
     httpOnly: true,
     encrypt: true,
-    renew: false, // 延长会话有效期
+    renew: true, // 延长会话有效期
   };
   // 配置数据库
   exports.mongoose = {

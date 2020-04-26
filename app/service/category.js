@@ -10,23 +10,19 @@
 const { Service } = require('egg');
 
 class CategoryService extends Service {
-// 增加品类
-  // constructor(){
-  //   super();
 
-  // }
+  /**
+   * 新增品类
+   */
+  async addCategory() {
 
-  async addCategory(req) {
-    // const { app } = this;
-    // console.log(this); undefined
     const Category = await this.ctx.model.Category;
-
-    const categoryInstance = new Category(req);
+    // console.log(this.ctx.body.category);
+    const categoryInstance = new Category(this.ctx.request.body);
     categoryInstance.save(err => {
       if (err) {
         // callback(err);
         console.log(err);
-        return;
       }
 
     });
