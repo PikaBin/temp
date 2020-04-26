@@ -22,7 +22,7 @@ module.exports = appInfo => {
     // myAppName: 'egg',
   };
 
-  config.upload = '/app/public/uploads';
+  config.upload = 'app/public/uploads/operator/';
 
   config.session = {
     key: 'vv', // key是存储在cookie中所有session值的合称；

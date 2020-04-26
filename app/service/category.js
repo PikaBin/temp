@@ -28,6 +28,10 @@ class CategoryService extends Service {
     });
     return categoryInstance;
   }
+
+  /**
+   * 更新品类
+   */
 }
 
 module.exports = CategoryService;
