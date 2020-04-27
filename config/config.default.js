@@ -24,6 +24,14 @@ module.exports = appInfo => {
 
   config.upload = 'app/public/uploads/operator/';
 
+  // 关闭csrf
+  config.security = {
+    csrf: {
+      enable: false,
+      ignoreJSON: true,
+    },
+  };
+
   config.session = {
     key: 'vv', // key是存储在cookie中所有session值的合称；
     maxAge: 1000 * 3600 * 24, // 24h
