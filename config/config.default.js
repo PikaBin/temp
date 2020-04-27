@@ -27,7 +27,7 @@ module.exports = appInfo => {
   // 关闭csrf
   exports.security = {
     csrf: {
-      // ignore: '/manager',
+      ignore: '/manager',
       enable: false,
       ignoreJSON: true,
     },
@@ -40,6 +40,7 @@ module.exports = appInfo => {
     encrypt: true,
     renew: true, // 延长会话有效期
   };
+
   // 配置数据库
   exports.mongoose = {
     client: {
