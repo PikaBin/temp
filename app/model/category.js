@@ -8,7 +8,7 @@ module.exports = app => {
     categoryID: Schema.Types.ObjectId,
     categoryName: { type: String, required: true },
     categoryIntrod: { type: String, required: true },
-    categoryState: { type: String, required: true, enum: [ '0', '1' ] },
+    categoryState: { type: String, required: true, enum: [ '0', '1' ],default: '0' }, // 0为 未上架，1为已上架
     categoryLabel: { type: Schema.Types.ObjectId, ref: 'Label' },
     categoryOperator: { type: Schema.Types.ObjectId, ref: 'Operator', required: true },
     /**

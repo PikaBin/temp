@@ -4,6 +4,8 @@
  * 具体功能：
  * 1.新增运营商
  * 2.更新运营商信息
+ * 3.查询运营商信息
+ * 4.删除运营商信息（应该是平台拥有的功能）
  */
 
 const { Service } = require('egg');
@@ -26,11 +28,10 @@ class OperatorInfo extends Service {
   }
   /**
    * 更新前端数据应该分为两步，第一步展示原有的信息表单，前端进行修改完成，提交，第二步，后端更新数据库信息，重新定位到运营商信息页面
-   * ...
+   * @param  {Object} data 参数 为要修改的 Json格式的数据
    */
-  async updateOperator() {
+  async updateOperator(data) {
     const Operator = await this.ctx.model.Operator;
-    const data = await this.ctx.request.body;
     // eslint-disable-next-line no-unused-vars
     const temp = await Operator.findByIdAndUpdate(this.ctx.query._id, data); // 此处返回的记录为修改前的记录值
     const updatedData = Operator.findById(this.ctx.query._id);
@@ -49,6 +50,8 @@ class OperatorInfo extends Service {
     }
     return null;
   }
+
+
 }
 
 module.exports = OperatorInfo;

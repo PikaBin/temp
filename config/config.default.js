@@ -15,7 +15,7 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1578279037752_3622';
 
   // add your middleware config here
-  config.middleware = [ 'csrfAuth' ];
+  // config.middleware = [ 'csrfAuth' ];
 
   // add your user config here
   const userConfig = {
@@ -25,8 +25,9 @@ module.exports = appInfo => {
   config.upload = 'app/public/uploads/operator/';
 
   // 关闭csrf
-  config.security = {
+  exports.security = {
     csrf: {
+      // ignore: '/manager',
       enable: false,
       ignoreJSON: true,
     },

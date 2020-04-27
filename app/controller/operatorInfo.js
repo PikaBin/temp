@@ -32,11 +32,11 @@ class OperatorInfoController extends Controller {
   /**
    * 更新运营商基础信息并返回更新后的信息
    */
-  async updateOperator_get() {
-    this.ctx.body = {
-      _csrf: this.ctx.csrf,
-    };
-  }
+  // async updateOperator_get() {
+  //   this.ctx.body = {
+  //     _csrf: this.ctx.csrf,
+  //   };
+  // }
   async updateOperator() {
     // 获取前端数据
     // const req = await this.ctx.request.body;
@@ -62,10 +62,7 @@ class OperatorInfoController extends Controller {
     try {
       const foundData = await this.service.operatorInfo.queryOperator();
       if (foundData) {
-        this.ctx.body = {
-          foundData,
-          _csrf: this.ctx.csrf,
-        };
+        this.ctx.body = foundData;
         this.ctx.status = 201;
       } else {
         this.ctx.body = '查无结果';

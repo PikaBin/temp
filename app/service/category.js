@@ -31,7 +31,13 @@ class CategoryService extends Service {
 
   /**
    * 更新品类
+   * @param {object}data 要修改的数据
    */
-}
+//   async updateCategory(data) {
+//     const Category = await this.ctx.model.Category;
+
+//     const cate
+//   }
+// }
 
 module.exports = CategoryService;
