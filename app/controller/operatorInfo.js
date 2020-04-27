@@ -32,6 +32,11 @@ class OperatorInfoController extends Controller {
   /**
    * 更新运营商基础信息并返回更新后的信息
    */
+  async updateOperator_get() {
+    this.ctx.body = {
+      _csrf: this.ctx.csrf,
+    };
+  }
   async updateOperator() {
     // 获取前端数据
     // const req = await this.ctx.request.body;
@@ -57,7 +62,10 @@ class OperatorInfoController extends Controller {
     try {
       const foundData = await this.service.operatorInfo.queryOperator();
       if (foundData) {
-        this.ctx.body = foundData;
+        this.ctx.body = {
+          foundData,
+          _csrf: this.ctx.csrf,
+        };
         this.ctx.status = 201;
       } else {
         this.ctx.body = '查无结果';
@@ -88,22 +96,22 @@ class OperatorInfoController extends Controller {
     const writeStream = fs.createWriteStream(target);
     await pump(stream, writeStream);
 
+    // 将图片存储路径加入到相应运营商记录中
+    // const id = this.ctx.query.id; // 暂时从前端通过query方式 传入用户id
+    // const Operator = this.ctx.model.Operator;
+    try {
+      const result = await this.ctx.service.operatorInfo.updateOperator({ legalPersonPhoto: dir.saveDir });
+      console.log('result:' + JSON.stringify(result));
+    } catch (err) {
+      console.log('operatorInfo错误：' + err);
+    }
+
+
     this.ctx.body = {
       url: target,
       fields: stream.fields,
     };
 
-    // const id = this.ctx.query.id; // 暂时从前端通过查询参数 传入用户id，因为没有掌握session
-    // const photoPath = await this.ctx.service.fileupload.addImage();
-    // const Operator = this.ctx.model.Operator;
-    // try {
-    //   const result = await Operator.findByIdAndUpdate(id, { legalPersonPhoto: photoPath });
-    //   console.log('result:' + result);
-    //   this.ctx.body = photoPath;
-    //   this.ctx.status = 200;
-    // } catch (err) {
-    //   console.log('operatorInfo错误：' + err);
-    // }
   }
 }
 

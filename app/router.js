@@ -13,6 +13,7 @@ module.exports = app => {
 
   // 运营商基础信息管理
   router.post('/manager/addoperator', controller.operatorInfo.addOperator);
+  router.get('/manager/updateoperator_get', controller.operatorInfo.updateOperator_get); // 用来返回csrf值
   router.post('/manager/updateoperator', controller.operatorInfo.updateOperator);
   router.get('/manager/queryoperator', controller.operatorInfo.queryOperator);
   router.post('/manager/addimage', controller.operatorInfo.getPhoto); // 上传图片
