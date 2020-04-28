@@ -32,12 +32,24 @@ class CategoryService extends Service {
   /**
    * 更新品类
    * @param {object}data 要修改的数据
+   * 获取前端更新值，存储到品类申请表，等待平台审核
+   * state为0为修改失败，为1则成功
    */
-  //   async updateCategory(data) {
-  //     const Category = await this.ctx.model.Category;
-
-//     const cate
-//   }
+  async updateCategory_O(data) {
+    const CategoryAsk = await this.ctx.model.CategoryAsk;
+    const CAInstance = new CategoryAsk(data);
+    // console.log('service层：' + CAInstance);
+    CAInstance.save(err => {
+      if (err) {
+        console.log('/service.updateCategory/' + err);
+        return { state: '0' };
+      }
+    });
+    return {
+      state: '1', // 审核成功
+      Category_fix: CAInstance,
+    };
+  }
 }
 
 module.exports = CategoryService;
