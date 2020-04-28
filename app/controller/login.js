@@ -33,7 +33,7 @@ class LoginController extends Controller {
   // 展示登录页面中的验证码
   async signIn_get() {
     const captcha = await this.ctx.service.tools.captcha();
-    this.ctx.response.type = 'image/svg+xml';
+    // this.ctx.response.type = 'image/svg+xml';
     this.ctx.body = captcha.data;
   }
 
