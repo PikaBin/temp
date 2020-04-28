@@ -15,7 +15,10 @@ class OperatorInfo extends Service {
   /** 新增运营商  */
   async addOperator() {
     const Operator = await this.ctx.model.Operator;
-    const operatorInstance = new Operator(this.ctx.request.body);
+    const req = this.ctx.request.body;
+    req.password = (await this.ctx.service.tools.md5(req.password)).toString();
+    console.log('password是什么类型' + typeof (req.password));
+    const operatorInstance = new Operator(req);
     operatorInstance.save(err => {
       if (err) {
         console.log(err);
@@ -35,7 +38,7 @@ class OperatorInfo extends Service {
     // eslint-disable-next-line no-unused-vars
     const temp = await Operator.findByIdAndUpdate(this.ctx.query._id, data); // 此处返回的记录为修改前的记录值
     const updatedData = Operator.findById(this.ctx.query._id);
-    console.log('"更新"后的数据' + JSON.stringify(data));
+    // console.log('"更新"后的数据' + JSON.stringify(data));
     return updatedData;
 
   }
