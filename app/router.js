@@ -20,8 +20,12 @@ module.exports = app => {
 
   // 品类标签
   router.post('/manager/addlabel/', controller.label.addLabel);
-  // 品类管理
+
+  /**
+   * 品类管理
+   * */
   router.post('/manager/addcategory/', controller.category.addCategry);
+  router.post('/manager/updateCategory_O/', controller.category.updateCategory_O);
   // 单品管理
   router.post('/manager/additem/', controller.item.addItem);
 

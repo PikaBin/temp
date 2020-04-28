@@ -24,14 +24,6 @@ module.exports = appInfo => {
 
   config.upload = 'app/public/uploads/operator/';
 
-  // 关闭csrf
-  exports.security = {
-    csrf: {
-      ignore: '/manager',
-      enable: false,
-      ignoreJSON: true,
-    },
-  };
 
   config.session = {
     key: 'vv', // key是存储在cookie中所有session值的合称；
@@ -56,7 +48,12 @@ module.exports = appInfo => {
 
   // 解决跨域
   exports.security = {
-    domainWhiteList: [ 'http://localhost:8000', 'http://localhost:3000' ],
+    domainWhiteList: [ 'http://localhost:8000', 'http://localhost:3000', 'http://localhost:7002', 'http://localhost:7001', 'http://localhost:7003' ],
+    csrf: {
+      ignore: '/manager',
+      enable: false,
+      ignoreJSON: true,
+    },
   };
 
 
