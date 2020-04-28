@@ -36,7 +36,7 @@ class LoginController extends Controller {
     // this.ctx.response.type = 'image/svg+xml';
     this.ctx.body = {
       verify_image: captcha.data,
-    }
+    };
   }
 
   // 登录 验证码，查询账户，密码
@@ -57,11 +57,19 @@ class LoginController extends Controller {
         };
         // console.log('查询结果信息：' + result[0]);
       } else {
-        this.ctx.body = '账号或者密码不正确';
+        this.ctx.body = {
+          result: '用户不存在',
+          status: 'false',
+          authority: 'admin',
+        };
         return;
       }
     } else {
-      this.ctx.body = '验证码不正确';
+      this.ctx.body = {
+        result: '验证码不正确',
+        status: 'false',
+        authority: 'admin',
+      };
       return;
     }
   }
