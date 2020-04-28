@@ -34,7 +34,9 @@ class LoginController extends Controller {
   async signIn_get() {
     const captcha = await this.ctx.service.tools.captcha();
     // this.ctx.response.type = 'image/svg+xml';
-    this.ctx.body = captcha.data;
+    this.ctx.body = {
+      verify_image: captcha.data,
+    }
   }
 
   // 登录 验证码，查询账户，密码
