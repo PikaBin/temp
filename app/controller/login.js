@@ -48,7 +48,11 @@ class LoginController extends Controller {
       const result = await this.ctx.model.Operator.find({ account, password });
       if (result.length > 0) {
         this.ctx.session.userinfo = result[0];
-        this.ctx.body = result;
+        this.ctx.body = {
+          result,
+          status: 'ok',
+          authority: 'admin',
+        };
         console.log('查询结果信息：' + result[0]);
       } else {
         this.ctx.body = '账号或者密码不正确';
