@@ -38,6 +38,12 @@ class LoginController extends Controller {
       verify_image: captcha.data,
     };
   }
+  // 测试登录用
+  async signIn_test() {
+    const captcha = await this.ctx.service.tools.captcha();
+    this.ctx.response.type = 'image/svg+xml';
+    this.ctx.body = captcha.data;
+  }
 
   // 登录 验证码，查询账户，密码
   async signIn() {
