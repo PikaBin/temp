@@ -64,7 +64,7 @@ class LoginController extends Controller {
         // console.log('查询结果信息：' + result[0]);
       } else {
         this.ctx.body = {
-          result: '用户不存在',
+          result: '用户或者密码错误',
           status: 'false',
           authority: 'admin',
         };
