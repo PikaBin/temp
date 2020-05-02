@@ -1,5 +1,5 @@
 /**
- * 工单控制
+ * 工单管理
  */
 'use strict';
 const Controller = require('egg').Controller;
@@ -21,10 +21,29 @@ class workorderController extends Controller {
     try {
       const workorders = await this.ctx.service.workorder.workorderAdd();
       console.log('workorder内容：' + workorders);
-      this.ctx.status = 200;
       this.ctx.body = workorders;
     } catch (err) {
       console.log('workorderController错误：' + err);
+    }
+  }
+
+  // 获取派发列表
+  async assignGet() {
+
+    try {
+      const badServicers = await this.ctx.request.body.badServicers; // 沟通，让前端进行增添这个字段
+      console.log('body:' + JSON.stringify(badServicers));
+      const result = await this.ctx.service.workorder.assignGet(badServicers);
+      this.ctx.body = {
+        status: '1',
+        result,
+      };
+    } catch (err) {
+      console.log('err信息：' + err);
+      this.ctx.body = {
+        status: '0',
+        information: '获取专才列表失败',
+      };
     }
   }
 }

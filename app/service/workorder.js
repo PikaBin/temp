@@ -17,7 +17,7 @@ class WorkorderService extends Service {
   async findUpdatedOrder() {
 
     const Order = await this.ctx.model.Order;
-    const FIRSTID = 202004010001; // 第一条订单id
+    const FIRSTID = 0; // 第一条订单id
 
     // 以此来判断是否最开始一次的查询，如果是那么就为第一个订单id，如果不是则为上一次查询id
     const oldID = this.ctx.session.orderId ? this.ctx.session.orderId : FIRSTID;
@@ -34,7 +34,28 @@ class WorkorderService extends Service {
     }
 
   }
-  // 新增工单，通过检测订单表的更新从而新增对应的工单
+  // 手动新增工单，测试用
+  async workorderAdd_man() {
+    const Workorder = this.ctx.model.Workorder;
+    const workorderInstance = new Workorder(this.ctx.request.body);
+    try {
+      workorderInstance.save();
+      return {
+        workorderInstance,
+        status: '0',
+        information: '新增成功',
+      };
+    } catch (err) {
+      console.log(err);
+      return {
+        status: '1',
+        error: err.message,
+        information: '新增失败',
+      };
+    }
+  }
+
+  // 根据订单表自动新增工单，通过检测订单表的更新从而新增对应的工单
   async workorderAdd() {
     // console.log('body内容：' + JSON.stringify(this.ctx.request.body));
     const Workorder = this.ctx.model.Workorder;
@@ -54,9 +75,7 @@ class WorkorderService extends Service {
         requirement: order.remark,
         customerPhone: order.phone,
       });
-      workorderInstance.save(err => {
-        console.log('workorderService错误' + err);
-      });
+      workorderInstance.save();
       workorders.push(workorderInstance);
     }
 
@@ -67,31 +86,37 @@ class WorkorderService extends Service {
    * 派发工单_get
    * 获取要派发的工单，通过匹配专才的可接项目，在接项目数量，在职状态，来确定一个可用专才列表，从而返回给前端
    */
-  async assgin_get(badServicers) {
+  async assignGet(badServicers) {
+    try {
+      const Servicer = this.ctx.model.Servicer;
+      const Item = this.ctx.model.Item;
+      const Order = this.ctx.model.Order;
+      // 获取要派发的工单
+      const workorder = await this.ctx.request.body;
 
-    const Servicer = this.ctx.model.Servicer;
-    const Item = this.ctx.model.Item;
-    const Order = this.ctx.model.Order;
-    // 获取要派发的工单
-    const workorder = await this.ctx.body.workorder;
-
-    // 查询工单对应的item
-    // const item = Workorder.find({_id: workorder._id})
-    //               .populate('Order', 'itemId')
-    //               .populate('Item','itemName');
-    const itemID = await Order.findById(workorder.orderId, { itemId: 1, _id: 0 }); // 只返回itemId字段
-    const itemname = await Item.findById(itemID, { _id: 0, itemName: 1 });
+      // 查询工单对应的item
+      // const item = Workorder.find({_id: workorder._id})
+      //               .populate('Order', 'itemId')
+      //               .populate('Item','itemName');
+      const itemID = await Order.findById(workorder.orderId, { itemId: 1, _id: 0 }); // 只返回itemId字段
+      const itemname = await Item.findById(itemID, { _id: 0, itemName: 1 });
 
 
-    // 查找符合条件的专才（在职状态为正常，在接项目小于最大可接项目数量，可接项目与工单上的一致
-    // $in 操作符 表示servicerItem的元素 至少匹配itemname的一项
-    const candidates = Servicer.aggregate([{ $match: { servicerStatus: '1', ordering: { $lt: '$MaxWorkeOrder' }, servicerItem: { $in: itemname } } }]);
+      // 查找符合条件的专才（在职状态为正常，在接项目小于最大可接项目数量，可接项目与工单上的一致
 
-    // 返回符合条件的专才，和已经拒单的专才(返回全部字段吗？)
-    return {
-      candidates: candidates,
-      badServicers: badServicers,
-    };
+      // $in 操作符 表示servicerItem的元素 至少匹配itemname的一项
+      const candidates = await Servicer.aggregate([{ $match: { servicerStatus: '1', workordering: { $lt: '$MaxWorkeOrder' }, itemname: { $in: '$servicerItem' } } }]);
+
+      // 返回符合条件的专才，和已经拒单的专才(返回全部字段吗？)
+      return {
+        candidates: candidates,
+        badServicers: badServicers,
+      };
+
+    } catch (err) {
+      throw (err + '位置：service层assignGet');
+    }
+
 
   }
 

@@ -49,7 +49,7 @@ class LoginController extends Controller {
   async signIn() {
 
     const { account, code } = await this.ctx.request.body;
-    console.log(code, this.ctx.session.code);
+    console.log('code' + code, this.ctx.session.code);
     const password = await this.service.tools.md5(this.ctx.request.body.password);
     // 判断验证码
     if (code.toUpperCase() === this.ctx.session.code.toUpperCase()) {

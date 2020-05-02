@@ -26,7 +26,7 @@ module.exports = appInfo => {
 
 
   config.session = {
-    key: 'vv', // key是存储在cookie中所有session值的合称；
+    key: 'operator', // key是存储在cookie中所有session值的合称；
     maxAge: 1000 * 3600 * 24, // 24h
     httpOnly: true,
     encrypt: true,
@@ -36,7 +36,7 @@ module.exports = appInfo => {
   // 配置数据库
   exports.mongoose = {
     client: {
-      url: 'mongodb://admin:admin123@59.110.162.236:27017/FW?authSource=admin',
+      url: 'mongodb://admin:admin123@59.110.162.236:27017/SharedService?authSource=admin',
       options: {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -58,7 +58,7 @@ module.exports = appInfo => {
 
 
   config.cors = {
-  // origin: '*', //允许所有跨域访问，注释掉则允许上面 白名单 访问
+    origin: '*', // 允许所有跨域访问，注释掉则允许上面 白名单 访问
     credentials: true, // 允许跨域请求携带cookies
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
   };
