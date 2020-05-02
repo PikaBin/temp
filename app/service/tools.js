@@ -22,7 +22,6 @@ class ToolService extends Service {
       background: '#cc9966',
     });
     this.ctx.session.code = captcha.text;
-    console.log(this.ctx.session.code);
     return captcha;
   }
 

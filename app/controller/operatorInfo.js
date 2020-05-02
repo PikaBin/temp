@@ -96,6 +96,7 @@ class OperatorInfoController extends Controller {
     // 将图片存储路径加入到相应运营商记录中
     // const id = this.ctx.query.id; // 暂时从前端通过query方式 传入用户id
     // const Operator = this.ctx.model.Operator;
+    console.log(dir.saveDir);
     try {
       const result = await this.ctx.service.operatorInfo.updateOperator({ legalPersonPhoto: dir.saveDir });
       console.log('result:' + JSON.stringify(result));
@@ -105,7 +106,7 @@ class OperatorInfoController extends Controller {
 
 
     this.ctx.body = {
-      url: target,
+      url: dir.saveDir,
       fields: stream.fields,
     };
 
