@@ -54,6 +54,7 @@ class LoginController extends Controller {
     // 判断验证码
     if (code.toUpperCase() === this.ctx.session.code.toUpperCase()) {
       const result = await this.ctx.model.Operator.find({ account, password });
+      console.log('查询结果信息：' + result);
       if (result.length > 0) {
         this.ctx.session.userinfo = result[0];
         this.ctx.body = {
@@ -61,7 +62,6 @@ class LoginController extends Controller {
           status: 'ok',
           authority: 'admin',
         };
-        console.log('查询结果信息：' + result);
       } else {
         this.ctx.body = {
           result: '用户或者密码错误',
