@@ -32,12 +32,6 @@ module.exports = app => {
     categoryAddTime: { type: Date, required: true },
     categoryReviseTime: { type: Date },
     categoryDeleteTime: { type: Date },
-    // interruptRequest: [ new Schema({
-    //   _id: Schema.Types.ObjectId,
-    //   stage: Array,
-    //   receivable: Number,
-    // }) ],
-    interruptRequest: Array,
   });
 
   return mongoose.model('Category', categorySchema);

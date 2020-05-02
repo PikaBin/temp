@@ -38,6 +38,7 @@ class CategoryService extends Service {
   async updateCategory_O(data) {
     const CategoryAsk = await this.ctx.model.CategoryAsk;
     const CAInstance = new CategoryAsk(data);
+    CAInstance.timestamp = Date.now();
     // console.log('service层：' + CAInstance);
     CAInstance.save(err => {
       if (err) {
@@ -46,9 +47,17 @@ class CategoryService extends Service {
       }
     });
     return {
-      state: '1', // 审核成功
+      state: '1', // 修改成功
+      information: '修改成功',
       Category_fix: CAInstance,
     };
+  }
+
+  // 品类列表展示
+  async queryCategry(options) {
+    const Category = this.ctx.model.Category;
+    const result = await Category.find(options);
+    return result;
   }
 }
 

@@ -27,12 +27,32 @@ class categoryController extends Controller {
 
   }
 
+
   // 修改品类
   async updateCategory_O() {
     const req = await this.ctx.request.body;
     const CAinstance = await this.ctx.service.category.updateCategory_O(req);
     this.ctx.body = CAinstance;
     console.log(JSON.stringify(CAinstance));
+  }
+
+  // 查询品类
+  async queryCategory() {
+    const req = await this.ctx.query;
+    try {
+      const result = await this.ctx.service.category.queryCategry(req);
+      this.ctx.body = {
+        status: '0',
+        information: '查询成功',
+        res: result,
+      };
+    } catch (err) {
+      console.log('err信息：' + err);
+      this.ctx.body = {
+        status: '0',
+        information: '查询失败',
+      };
+    }
   }
 }
 
