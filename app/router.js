@@ -7,7 +7,7 @@ module.exports = app => {
   const { router, controller } = app;
   router.get('/', controller.home.index);
   // 注册，登录
-  router.post('/operator/signup', controller.login.signUp);
+  // router.post('/operator/signup', controller.login.signUp);
   router.get('/operator/signin', controller.login.signIn_get); // 返回验证码代码
   router.post('/operator/signin', controller.login.signIn); // 处理登录
   router.get('/operator/signin_test', controller.login.signIn_test); // 测试，返回图片
@@ -35,6 +35,7 @@ module.exports = app => {
   router.post('/manager/addInterrupt', controller.item.addInterrupt); // 新增任务中断要求
   router.post('/manager/addpartition', controller.item.addPartition); // 新增单品分区
   router.post('/manager/addtask', controller.item.addTask); // 新增任务
+  router.post('/manager/additemImage', controller.item.getPhoto); // 上传单品图片，测试
 
   // 工单管理
   router.get('/manager/neworder', controller.workorder.findOrder); // 返回新增订单
