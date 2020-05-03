@@ -33,26 +33,64 @@ class CategoryService extends Service {
    * 更新品类
    * @param {object}data 要修改的数据
    * 判断要修改的品类是否为上架状态，如果是，则提交申请，返回前端提示信息；
-   * 如果为上架，直接修改，然后返回修改后的品类数据；
+   * 如果未上架，直接修改，然后返回修改后的品类数据；
    * 获取前端更新值，存储到品类申请表，等待平台审核
    * state为0为修改失败，为1则成功
    */
   async updateCategory_O(data) {
-    const CategoryAsk = await this.ctx.model.CategoryAsk;
-    const CAInstance = new CategoryAsk(data);
-    CAInstance.timestamp = Date.now();
-    // console.log('service层：' + CAInstance);
-    CAInstance.save(err => {
-      if (err) {
-        console.log('/service.updateCategory/' + err);
-        return { state: '0' };
+    // 查询要更新的品类
+    const Category = await this.ctx.model.Category;
+    const updateInstance = await Category.findById(this.ctx.query._id);
+    console.log(updateInstance);
+    // 判断品类是否上架，然后做出相应操作，0为未上架
+    if (updateInstance.categoryState === '0') {
+      try {
+        const updateResult = await Category.updateOne({ _id: this.ctx.query._id }, data);
+        const latestOne = await Category.findById({ _id: this.ctx.query._id });
+        console.log('查询结果：' + JSON.stringify(updateResult));
+        if (updateResult.nModified === 0) {
+          return {
+            information: '更新失败',
+            status: '0',
+            error: '无匹配',
+          };
+        }
+        return {
+          information: '更新成功',
+          status: '1',
+          latestOne,
+        };
+      } catch (err) {
+        console.log('err信息：' + err);
+        return {
+          information: '更新失败',
+          status: '1',
+          error: err.message,
+        };
       }
-    });
-    return {
-      state: '1', // 修改成功
-      information: '修改成功',
-      Category_fix: CAInstance,
-    };
+      // 若品类已上架，则提交修改申请
+    } else {
+      const CategoryAsk = await this.ctx.model.CategoryAsk;
+      const CAInstance = new CategoryAsk(data);
+      CAInstance.timestamp = Date.now(); // 因为model表中默认时间戳的值不会更新，所以在这里改变
+      // console.log('service层：' + CAInstance);
+      try {
+        CAInstance.save();
+        return {
+          state: '0', // 修改成功
+          information: '提交修改成功，请等待审核',
+          CAInstance,
+        };
+      } catch (err) {
+        console.log('err信息：' + err);
+        return {
+          state: '1',
+          information: '提交修改失败',
+          CAInstance,
+        };
+      }
+
+    }
   }
 
   // 品类列表展示
