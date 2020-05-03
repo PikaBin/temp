@@ -54,6 +54,13 @@ class categoryController extends Controller {
       };
     }
   }
+
+  // 删除品类
+  async deleteCategory() {
+    const deleltecategory = await this.ctx.service.category.deleteCategory();
+    this.ctx.body = deleltecategory;
+    console.log('总controller' + JSON.stringify(deleltecategory));
+  }
 }
 
 module.exports = categoryController;

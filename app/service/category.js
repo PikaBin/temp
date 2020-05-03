@@ -30,7 +30,7 @@ class CategoryService extends Service {
   }
 
   /**
-   * 更新品类
+   * 修改品类
    * @param {object}data 要修改的数据
    * 判断要修改的品类是否为上架状态，如果是，则提交申请，返回前端提示信息；
    * 如果未上架，直接修改，然后返回修改后的品类数据；
@@ -93,19 +93,22 @@ class CategoryService extends Service {
     }
   }
 
-  // 品类列表展示
+  /** 查询品类（列表）
+   * @param {JSON} options 传入查询的条件
+  */
   async queryCategory(options) {
     const Category = this.ctx.model.Category;
     const result = await Category.find(options).sort({ categoryAddTime: -1 });
     return result;
   }
 
-  // 删除品类
+  /** 删除品类 */
   async deleteCategory() {
 
     // 获取要删除的品类
     const Category = await this.ctx.model.Category;
     const deleteInstance = await this.ctx.request.body;
+    const Categorydelete = await this.ctx.model.Categorydelete;
     console.log(deleteInstance);
 
     // 判断品类是否上架，然后做出相应操作，0为未上架
@@ -136,22 +139,26 @@ class CategoryService extends Service {
       }
       // 若品类已上架，则提交修改申请
     } else {
-      const CategoryAsk = await this.ctx.model.CategoryAsk;
-      const CAInstance = new CategoryAsk();
-      CAInstance.timestamp = Date.now(); // 因为model表中默认时间戳的值不会更新，所以在这里改变
-      // console.log('service层：' + CAInstance);
+      const CAInstance = new Categorydelete({
+        categoryID: deleteInstance._id, // 品类ID
+        applyTime: new Date(), // 申请时间
+        verifyTime: null, // 审核时间
+        timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
+      });
+      console.log('service层：' + CAInstance);
+
       try {
         CAInstance.save();
         return {
-          state: '0', // 修改成功
-          information: '提交修改成功，请等待审核',
+          state: '0',
+          information: '提交删除成功，请等待审核',
           CAInstance,
         };
       } catch (err) {
         console.log('err信息：' + err);
         return {
           state: '1',
-          information: '提交修改失败',
+          information: '提交删除失败',
           CAInstance,
         };
       }
