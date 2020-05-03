@@ -6,7 +6,7 @@ module.exports = app => {
 
   const categorySchema = new Schema({
     timestamp: { type: Number, default: Date.now() }, // 时间戳，作为判断最新记录的依据
-    Ask: { type: String, required: true, default: '0' }, // 是否审核状态码，0为审核中，1为审核成功，2为审核未通过，默认为0
+    // Ask: { type: String, required: true, default: '0' }, // 是否审核状态码，0为审核中，1为审核成功，2为审核未通过，默认为0
     categoryID: Schema.Types.ObjectId,
     categoryName: { type: String, required: true },
     categoryIntrod: { type: String, required: true },
@@ -29,17 +29,11 @@ module.exports = app => {
     categoryMaxTaskTime: { type: Number, required: true },
     categoryMinPrice: { type: Number, required: true },
     categoryMaxPrice: { type: Number, required: true },
-    categoryExamineTF: { type: String, required: true },
+    categoryExamineTF: { type: String, required: true, default: '2' }, // 0 – 未通过上架/  1 – 通过上架/  2 – 未通过修改/  3 – 通过修改/  4 – 未通过下架/  5 – 下架
     categoryReason: { type: String },
     categoryAddTime: { type: Date, required: true },
     categoryReviseTime: { type: Date },
     categoryDeleteTime: { type: Date },
-    // interruptRequest: [ new Schema({
-    //   _id: Schema.Types.ObjectId,
-    //   stage: Array,
-    //   receivable: Number,
-    // }) ],
-    interruptRequest: Array,
   });
 
   return mongoose.model('CategoryAsk', categorySchema);
