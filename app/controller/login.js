@@ -49,14 +49,12 @@ class LoginController extends Controller {
   async signIn() {
 
     const { account, code } = await this.ctx.request.body;
-    console.log('code' + code, this.ctx.session.code);
-    const psd = await this.ctx.request.body.password;
-    console.log('账户密码：' + account, psd);
+    // console.log('code' + code, this.ctx.session.code);
     const password = await this.ctx.service.tools.md5(this.ctx.request.body.password);
     // 判断验证码
     if (code.toUpperCase() === this.ctx.session.code.toUpperCase()) {
       const result = await this.ctx.model.Operator.find({ account, password });
-      console.log('查询结果信息：' + result);
+      // console.log('查询结果信息：' + result);
       if (result.length > 0) {
         this.ctx.session.userinfo = result[0];
         this.ctx.body = {
