@@ -40,7 +40,7 @@ class categoryController extends Controller {
   async queryCategory() {
     const req = await this.ctx.query;
     try {
-      const result = await this.ctx.service.category.queryCategry(req);
+      const result = await this.ctx.service.category.queryCategory(req);
       this.ctx.body = {
         status: '0',
         information: '查询成功',
