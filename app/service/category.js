@@ -94,10 +94,69 @@ class CategoryService extends Service {
   }
 
   // 品类列表展示
-  async queryCategry(options) {
+  async queryCategory(options) {
     const Category = this.ctx.model.Category;
-    const result = await Category.find(options);
+    const result = await Category.find(options).sort({ categoryAddTime: -1 });
     return result;
+  }
+
+  // 删除品类
+  async deleteCategory() {
+
+    // 获取要删除的品类
+    const Category = await this.ctx.model.Category;
+    const deleteInstance = await this.ctx.request.body;
+    console.log(deleteInstance);
+
+    // 判断品类是否上架，然后做出相应操作，0为未上架
+    if (deleteInstance.categoryState === '0') {
+      try {
+        const deleteResult = await Category.deleteOne({ _id: this.ctx.query._id });
+        // const latestOne = await Category.findById({ _id: this.ctx.query._id });
+        // console.log('查询结果：' + JSON.stringify(updateResult));
+        // if (updateResult.nModified === 0) {
+        //   return {
+        //     information: '更新失败',
+        //     status: '0',
+        //     error: '无匹配',
+        //   };
+        // }
+        return {
+          information: '删除成功',
+          status: '1',
+          deleteResult,
+        };
+      } catch (err) {
+        console.log('err信息：' + err);
+        return {
+          information: '删除失败',
+          status: '1',
+          error: err.message,
+        };
+      }
+      // 若品类已上架，则提交修改申请
+    } else {
+      const CategoryAsk = await this.ctx.model.CategoryAsk;
+      const CAInstance = new CategoryAsk();
+      CAInstance.timestamp = Date.now(); // 因为model表中默认时间戳的值不会更新，所以在这里改变
+      // console.log('service层：' + CAInstance);
+      try {
+        CAInstance.save();
+        return {
+          state: '0', // 修改成功
+          information: '提交修改成功，请等待审核',
+          CAInstance,
+        };
+      } catch (err) {
+        console.log('err信息：' + err);
+        return {
+          state: '1',
+          information: '提交修改失败',
+          CAInstance,
+        };
+      }
+
+    }
   }
 }
 
