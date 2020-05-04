@@ -5,12 +5,13 @@ module.exports = app => {
   const Schema = mongoose.Schema;
 
   const categoryJudgeSchema = new Schema({
-    categoryTableID: { type: String, required: true }, // 品类审核表ID
+    timestamp: { type: Number, default: Date.now() }, // 时间戳
     categoryID: { type: String, required: true }, // 品类id
-    auditResult: { type: String, required: false }, // 审核结果
-    auditorID: { type: String, required: false }, // 审核人ID
+    auditResult: { type: String, default: '0' }, // 审核结果 0: 未审核，1：审核通过， 2：审核不通过
+    auditorID: { type: String, default: null }, // 审核人ID
     auditTime: { type: String, required: false }, // 审核时间
-    auditStatus: { type: String, required: false }, // 审核状态（1-通过 0-未通过）
+    applyTime: Date,
+    action: { type: String }, // up:上架，off:下架
   });
   return mongoose.model('CategoryJudge', categoryJudgeSchema);
 };

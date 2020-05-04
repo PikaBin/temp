@@ -3,7 +3,7 @@
 module.exports = app => {
   const mongoose = app.mongoose;
   const Schema = mongoose.Schema;
-  const categoryDeleteSchema = new Schema({
+  const CadeleteSchema = new Schema({
     categoryID: { type: String, required: true }, // 品类ID
     auditorID: { type: String, default: null }, // 审核员ID
     applyTime: { type: Date, required: true }, // 申请时间
@@ -12,5 +12,5 @@ module.exports = app => {
     timestamp: { type: Number, default: Date.now() }, // 时间戳
   });
 
-  return mongoose.model('Categorydelete', categoryDeleteSchema);
+  return mongoose.model('Categorydelete', CadeleteSchema);
 };

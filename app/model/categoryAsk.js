@@ -32,7 +32,7 @@ module.exports = app => {
     categoryExamineTF: { type: String, required: true, default: '2' }, // 0 – 未通过上架/  1 – 通过上架/  2 – 未通过修改/  3 – 通过修改/  4 – 未通过下架/  5 – 下架
     categoryReason: { type: String },
     categoryAddTime: { type: Date, required: true },
-    categoryReviseTime: { type: Date },
+    categoryReviseTime: { type: Date, default: null },
     categoryDeleteTime: { type: Date },
   });
 
