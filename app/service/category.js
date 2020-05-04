@@ -2,10 +2,11 @@
 'use strict';
 /**
  * 本文件封装了关于品类(category)的一些操作：
- * （1）增加（获取前端表单信息从而增加品类）【未实现】
+ * （1）增加（获取前端表单信息从而增加品类）
  * （2）删除
  * （3）更新
  * （4）查询
+ *  (5) 上下架
  */
 const { Service } = require('egg');
 
@@ -107,7 +108,7 @@ class CategoryService extends Service {
 
     // 获取要删除的品类
     const Category = await this.ctx.model.Category;
-    const deleteInstance = await this.ctx.request.body;
+    const deleteInstance = await Category.findById(this.ctx.query._id);
     const CategoryDelete = this.ctx.model.Deletecategory;
     // console.log(deleteInstance);
 
