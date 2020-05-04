@@ -169,10 +169,9 @@ class CategoryService extends Service {
   async changeState() {
     // 获取前端的id和数据
     const id = await this.ctx.query._id;
-    const data = await this.ctx.request.body;
-
-    // const Category = this.ctx.model.Category;
+    const Category = this.ctx.model.Category;
     const CategoryJudge = this.ctx.model.CategoryJudge;
+    const data = await Category.findById(id);
 
     // 上/下架，新增记录，返回
     try {
@@ -186,16 +185,17 @@ class CategoryService extends Service {
       });
       if (data.categoryState === '0') {
         upInstance.action = 'up';
+      } else {
+        upInstance.action = 'off';
       }
-      upInstance.action = 'off';
       return {
-        information: '提交上架请求成功',
+        information: '提交请求成功',
         status: '0',
         upInstance,
       };
     } catch (err) {
       return {
-        information: '提交上架请求失败',
+        information: '提交请求失败',
         status: '1',
         error: err.message,
       };
