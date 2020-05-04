@@ -175,12 +175,14 @@ class CategoryService extends Service {
     const Category = this.ctx.model.Category;
     const CategoryJudge = this.ctx.model.CategoryJudge;
     const data = await Category.findById(id);
+    const changeData = await this.ctx.request.body; // 获取前端上下架时传下来的数据
 
     // 上/下架，新增记录，返回
     try {
       const upInstance = await CategoryJudge.create({
         timestamp: Date.now(), // 时间戳
         categoryID: id, // 品类id
+        changeData,
         // auditResult: { type: String, default: '0' }, // 审核结果 0: 未审核，1：审核通过， 2：审核不通过
         // auditorID: { type: String, default: null }, // 审核人ID
         // auditTime: { type: String, required: false }, // 审核时间

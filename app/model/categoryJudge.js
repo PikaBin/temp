@@ -15,6 +15,7 @@ module.exports = app => {
     auditTime: { type: String, required: false }, // 审核时间
     applyTime: Date,
     action: { type: String }, // up:上架，off:下架
+    changedData: { type: Schema.Types.Mixed },
   });
   return mongoose.model('CategoryJudge', categoryJudgeSchema);
 };
