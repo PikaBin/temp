@@ -88,6 +88,11 @@ class itemController extends Controller {
     };
 
   }
+
+  async queryItem() {
+    const queryResult = await this.ctx.service.item.queryItem();
+    this.ctx.body = queryResult;
+  }
 }
 
 module.exports = itemController;

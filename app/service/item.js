@@ -6,6 +6,41 @@
 const { Service } = require('egg');
 
 class ItemService extends Service {
+
+  /**
+ * 品类查询
+ * 前端传入运营商id
+ */
+  async queryItem() {
+    const Item = await this.ctx.model.Item;
+    const query = await this.ctx.query;
+
+    try {
+      const findResult = await Item.find({ Operator: query.operatorID }).populate('Partition');
+      if (findResult) {
+        return {
+          information: '查询单品成功',
+          status: '0',
+          findResult,
+        };
+      }
+      // 没有匹配到
+      return {
+        information: '经查无此单品',
+        status: '1',
+        findResult,
+      };
+    } catch (err) {
+      console.log('err信息：' + err);
+      return {
+        information: '查询单品成功',
+        status: '0',
+        error: err.message,
+      };
+    }
+
+
+  }
   // 新增单品
   async addItem() {
     const Item = this.ctx.model.Item;
