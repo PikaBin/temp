@@ -108,27 +108,26 @@ class CategoryService extends Service {
     // 获取要删除的品类
     const Category = await this.ctx.model.Category;
     const deleteInstance = await this.ctx.request.body;
-    const Categorydelete = await this.ctx.model.Categorydelete;
-    console.log(deleteInstance);
+    const CategoryDelete = this.ctx.model.Deletecategory;
+    // console.log(deleteInstance);
 
     // 判断品类是否上架，然后做出相应操作，0为未上架
     if (deleteInstance.categoryState === '0') {
       try {
         const deleteResult = await Category.deleteOne({ _id: this.ctx.query._id });
-        // const latestOne = await Category.findById({ _id: this.ctx.query._id });
-        // console.log('查询结果：' + JSON.stringify(updateResult));
-        // if (updateResult.nModified === 0) {
-        //   return {
-        //     information: '更新失败',
-        //     status: '0',
-        //     error: '无匹配',
-        //   };
-        // }
+        if (deleteResult.deletedCount !== 0) {
+          return {
+            information: '删除成功',
+            status: '0',
+            deleteResult,
+          };
+        }
+        // 删除数量为空
         return {
-          information: '删除成功',
+          information: '删除失败',
           status: '1',
-          deleteResult,
         };
+
       } catch (err) {
         console.log('err信息：' + err);
         return {
@@ -139,30 +138,67 @@ class CategoryService extends Service {
       }
       // 若品类已上架，则提交修改申请
     } else {
-      const CAInstance = new Categorydelete({
-        categoryID: deleteInstance._id, // 品类ID
-        applyTime: new Date(), // 申请时间
-        verifyTime: null, // 审核时间
-        timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
-      });
-      console.log('service层：' + CAInstance);
 
       try {
-        CAInstance.save();
+        // 新增 删除申请记录
+        const CDInstance = await CategoryDelete.create({
+          categoryID: this.ctx.query._id, // 品类ID
+          applyTime: new Date(), // 申请时间
+          verifyTime: null, // 审核时间
+          timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
+        });
+        console.log('service层：' + CDInstance);
         return {
           state: '0',
           information: '提交删除成功，请等待审核',
-          CAInstance,
+          CDInstance,
         };
       } catch (err) {
         console.log('err信息：' + err);
         return {
           state: '1',
           information: '提交删除失败',
-          CAInstance,
+          error: err.message,
         };
       }
 
+    }
+  }
+
+  // 上下架品类,前端传来上/下 架的数据，query中传来_id
+  async changeState() {
+    // 获取前端的id和数据
+    const id = await this.ctx.query._id;
+    const data = await this.ctx.request.body;
+
+    // const Category = this.ctx.model.Category;
+    const CategoryJudge = this.ctx.model.CategoryJudge;
+
+    // 上/下架，新增记录，返回
+    try {
+      const upInstance = await CategoryJudge.create({
+        timestamp: Date.now(), // 时间戳
+        categoryID: id, // 品类id
+        // auditResult: { type: String, default: '0' }, // 审核结果 0: 未审核，1：审核通过， 2：审核不通过
+        // auditorID: { type: String, default: null }, // 审核人ID
+        // auditTime: { type: String, required: false }, // 审核时间
+        // applyTime: Date,
+      });
+      if (data.categoryState === '0') {
+        upInstance.action = 'up';
+      }
+      upInstance.action = 'off';
+      return {
+        information: '提交上架请求成功',
+        status: '0',
+        upInstance,
+      };
+    } catch (err) {
+      return {
+        information: '提交上架请求失败',
+        status: '1',
+        error: err.message,
+      };
     }
   }
 }

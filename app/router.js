@@ -28,7 +28,8 @@ module.exports = app => {
   router.post('/manager/addcategory/', controller.category.addCategry); // 增加品类
   router.post('/manager/updateCategory_O/', controller.category.updateCategory_O); // 运营商提交品类修改申请
   router.get('/manager/queryCategory', controller.category.queryCategory); // 查询品类（根据前端所选条件）
-
+  router.post('/manager/deletecategory/', controller.category.deleteCategory); // 运营商修改品类申请
+  router.post('/manager/uporoff', controller.category.upOroff); // 品类上下架
 
   // 单品管理
   router.post('/manager/additem/', controller.item.addItem); // 新增单品

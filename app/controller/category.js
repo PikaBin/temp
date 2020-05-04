@@ -61,6 +61,13 @@ class categoryController extends Controller {
     this.ctx.body = deleltecategory;
     console.log('总controller' + JSON.stringify(deleltecategory));
   }
+
+  // 品类上架或者下架
+  async upOroff() {
+    const result = await this.ctx.service.category.changeState();
+    this.ctx.body = result;
+    console.log('contorller:' + JSON.stringify(result));
+  }
 }
 
 module.exports = categoryController;
