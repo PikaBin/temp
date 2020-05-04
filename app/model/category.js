@@ -34,6 +34,7 @@ module.exports = app => {
     categoryAddTime: { type: Date, required: true },
     categoryReviseTime: { type: Date },
     categoryDeleteTime: { type: Date },
+    categoryverifyTime: Date,
   });
 
   return mongoose.model('Category', categorySchema);
