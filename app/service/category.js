@@ -110,6 +110,7 @@ class CategoryService extends Service {
     const Category = await this.ctx.model.Category;
     const deleteInstance = await Category.findById(this.ctx.query._id);
     const CategoryDelete = this.ctx.model.Deletecategory;
+    const deleteData = await this.ctx.request.body;
     // console.log(deleteInstance);
 
     // 判断品类是否上架，然后做出相应操作，0为未上架
@@ -147,6 +148,7 @@ class CategoryService extends Service {
           applyTime: new Date(), // 申请时间
           verifyTime: null, // 审核时间
           timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
+          deleteData,
         });
         console.log('service层：' + CDInstance);
         return {
