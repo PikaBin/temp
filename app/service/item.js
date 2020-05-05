@@ -19,14 +19,17 @@ class ItemService extends Service {
   /**
  * 单品查询
  * 前端传入运营商id
+ * 按加入时间降序
  */
   async queryItem() {
     const Item = await this.ctx.model.Item.Item;
     const query = await this.ctx.request.query;
     const operatorId = await this.ctx.service.tools.getObjectId(query.operatorID);
-    console.log('operator:' + JSON.stringify(query));
+    // const length = await this.ctx.service.tools.getJsonLength(query);
+    console.log('query内容：' + JSON.stringify(query));
+    // operatorID: operatorId, $or: [{ itemName: query.itemName }, { itemState: query.itemState }]
     try {
-      const findResult = await Item.aggregate([{ $match: { operatorID: operatorId, $or: [{ itemName: query.itemName }, { itemState: query.itemState }] } },
+      const findResult = await Item.aggregate([{ $match: { operatorID: operatorId } },
         { $lookup: {
           from: 'partitions',
           localField: '_id',
@@ -40,7 +43,7 @@ class ItemService extends Service {
             as: 'interrupt',
           },
         }]);
-        // 如果查询有结果
+      // 如果查询有结果
       if (findResult) {
         return {
           information: '查询单品成功',
@@ -48,11 +51,12 @@ class ItemService extends Service {
           findResult,
         };
       }
+
+
       // 没有匹配到
       return {
         information: '经查无此单品',
         status: '1',
-        findResult,
       };
     } catch (err) {
       console.log('err信息：' + err);
