@@ -30,6 +30,12 @@ class ToolService extends Service {
     return md5(str);
   }
 
+  // 类型转化工具，转为ObjectId
+  async getObjectId(id) {
+    const ObjectId = this.app.mongoose.Types.ObjectId;
+    return new ObjectId(id);
+  }
+
 }
 
 module.exports = ToolService;

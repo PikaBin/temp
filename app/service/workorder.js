@@ -55,28 +55,42 @@ class WorkorderService extends Service {
     }
   }
 
-  // 根据订单表自动新增工单，通过检测订单表的更新从而新增对应的工单
+
+  /**
+   * 根据订单表自动新增工单，通过检测订单表的更新从而新增对应的工单
+   * 有bug,当运行findUpdatedOrder接口时，session.orderId就会更新，然后工单新增就会
+   * 检测不到新的订单数据，然后对应的工单无法添加
+   */
   async workorderAdd() {
     // console.log('body内容：' + JSON.stringify(this.ctx.request.body));
     const Workorder = this.ctx.model.Workorder;
     const newOrders = await this.findUpdatedOrder(); // 获取新增的订单
     const workorders = []; // 存放新增的工单，
-    for (const order in newOrders) {
-      const workorderInstance = new Workorder({
-        // _id: 自动生成
-        W_name: order.orderId,
-        W_itemPartition: order.partitionId,
-        orderID: order.orderId,
-        W_operatorID: null,
-        W_state: 2, // 由于是新生成的工单，所以工单状态默认为2(待分配)
-        W_startTime: new Date(), // 此处有坑，mongodb数据库存入的时间会自动转化为零时区的时间，给以后的查询带来很大不便
-        // W_endTime: ,这个应该是工单实际结束时间还是预期结束时间，
-        W_serverTime: order.orderStartTime,
-        requirement: order.remark,
-        customerPhone: order.phone,
-      });
-      workorderInstance.save();
-      workorders.push(workorderInstance);
+    try {
+      for (const order in newOrders) {
+        console.log('单个订单：' + order);
+        const workorderInstance = new Workorder({
+          // _id: 自动生成
+          W_name: order.orderId,
+          W_itemPartition: order.partitionId,
+          orderID: order.orderId,
+          W_operatorID: null,
+          W_state: 2, // 由于是新生成的工单，所以工单状态默认为2(待分配)
+          W_startTime: new Date(), // 此处有坑，mongodb数据库存入的时间会自动转化为零时区的时间，给以后的查询带来很大不便
+          // W_endTime: ,这个应该是工单实际结束时间还是预期结束时间，
+          W_serverTime: order.orderStartTime,
+          requirement: order.remark,
+          customerPhone: order.phone,
+        });
+        workorderInstance.save();
+        workorders.push(workorderInstance);
+      }
+    } catch (err) {
+      console.log('err信息：' + err);
+      return {
+        information: '工单新增失败',
+        status: '1',
+      };
     }
 
     return workorders;
@@ -99,6 +113,7 @@ class WorkorderService extends Service {
       //               .populate('Order', 'itemId')
       //               .populate('Item','itemName');
       const itemID = await Order.findById(workorder.orderId, { itemId: 1, _id: 0 }); // 只返回itemId字段
+      // eslint-disable-next-line no-unused-vars
       const itemname = await Item.findById(itemID, { _id: 0, itemName: 1 });
 
 
