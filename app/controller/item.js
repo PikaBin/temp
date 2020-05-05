@@ -88,10 +88,21 @@ class itemController extends Controller {
     };
 
   }
-
+  /**
+   * 品类查询
+   */
   async queryItem() {
     const queryResult = await this.ctx.service.item.queryItem();
     this.ctx.body = queryResult;
+  }
+
+  /**
+   * 品类更新
+   */
+  async updateItem() {
+    const updateResult = await this.ctx.service.item.updateItem();
+    console.log('更新结果：' + updateResult);
+    this.ctx.body = updateResult;
   }
 }
 
