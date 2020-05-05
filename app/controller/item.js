@@ -89,11 +89,20 @@ class itemController extends Controller {
 
   }
   /**
-   * 品类查询
+   * 品类查询,根据运营商id
    */
   async queryItem() {
-    const queryResult = await this.ctx.service.item.queryItem();
+    const options = await this.ctx.request.body;
+    const queryResult = await this.ctx.service.item.queryItem(options);
     this.ctx.body = queryResult;
+  }
+
+  /**
+   * 品类查询,根据单品id
+   */
+  async queryByItem() {
+    const itemInstance = await this.ctx.service.item.queryByItem();
+    this.ctx.body = itemInstance;
   }
 
   /**
