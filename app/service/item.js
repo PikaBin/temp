@@ -1,14 +1,14 @@
 /**
  * 单品
  * 功能列表
- * 1.单品查询
- * 2.新增单品
- * 3.新增单品分区
- * 4.新增单品任务中断要求
- * 5.新增任务
- * 6.编辑单品
+ * 1.单品查询..
+ * 2.新增单品..
+ * 3.新增单品分区..
+ * 4.新增单品任务中断要求..
+ * 5.新增任务..
+ * 6.编辑单品..
  * 7.上下架单品
- * 8.删除单品
+ * 8.删除单品 .
  */
 'use strict';
 
@@ -24,9 +24,9 @@ class ItemService extends Service {
     const Item = await this.ctx.model.Item.Item;
     const query = await this.ctx.request.query;
     const operatorId = await this.ctx.service.tools.getObjectId(query.operatorID);
-    console.log('operator:' + query.operatorID);
+    console.log('operator:' + JSON.stringify(query));
     try {
-      const findResult = await Item.aggregate([{ $match: { operatorID: operatorId } },
+      const findResult = await Item.aggregate([{ $match: { operatorID: operatorId, $or: [{ itemName: query.itemName }, { itemState: query.itemState }] } },
         { $lookup: {
           from: 'partitions',
           localField: '_id',
@@ -67,13 +67,28 @@ class ItemService extends Service {
   }
   /**
    * 新增单品
+   * 有坑，就算新增失败，前端也不会报错，依旧返回数据，彷佛新增成功一样
    */
   async addItem() {
     const Item = await this.ctx.model.Item.Item;
     try {
       const itemInstance = new Item(this.ctx.request.body);
-      itemInstance.save();
-      return itemInstance;
+      await itemInstance.save();
+
+      // 检测是否真正插入数据
+      const ensure = await Item.findById(itemInstance._id);
+      if (ensure) {
+        return {
+          information: '新增成功',
+          status: '0',
+          ensure,
+        };
+      }
+      return {
+        information: '新增失败，可能缺失数据',
+        status: '1',
+      };
+
     } catch (err) {
       console.log(err);
       return {
@@ -225,7 +240,14 @@ class ItemService extends Service {
       };
     }
 
-
+  }
+  /**
+     * 删除单品
+     * 判断是否上架
+     */
+  async deleteItem() {
+    const Item = this.ctx.model.Item.Item;
+    const DeleteItem = this.ctx.model.Item.Deleteitem;
   }
 }
 module.exports = ItemService;
