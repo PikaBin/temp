@@ -25,6 +25,7 @@ class ItemService extends Service {
     const Item = await this.ctx.model.Item.Item;
     const query = await this.ctx.request.query;
     query.operatorID = await this.ctx.service.tools.getObjectId(query.operatorID);
+    query._id = await this.ctx.service.tools.getObjectId(query._id);
     // const length = await this.ctx.service.tools.getJsonLength(query);
     console.log('query内容：' + JSON.stringify(query));
     // operatorID: operatorId, $or: [{ itemName: query.itemName }, { itemState: query.itemState }]
@@ -72,9 +73,24 @@ class ItemService extends Service {
    * 根据单品id查单品
    */
   async queryByItem() {
-    const id = await this.ctx.query._id;
+    const query = await this.ctx.request.query;
+    const id = await this.ctx.service.tools.getObjectId(query._id);
+    console.log('id:' + id);
     const Item = this.ctx.model.Item.Item;
-    const findResult = await Item.findById(id);
+    const findResult = await Item.aggregate([{ $match: { _id: id } },
+      { $lookup: {
+        from: 'partitions',
+        localField: '_id',
+        foreignField: 'itemID',
+        as: 'partition',
+      } }, {
+        $lookup: {
+          from: 'interrupts',
+          localField: '_id',
+          foreignField: 'itemId',
+          as: 'interrupt',
+        },
+      }]);
     return findResult;
   }
   /**

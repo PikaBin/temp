@@ -36,6 +36,17 @@ class ToolService extends Service {
     return new ObjectId(id);
   }
 
+  // 判断JSON 的长度
+
+  async getJsonLength(jsonData) {
+    let length = 0;
+    // eslint-disable-next-line no-unused-vars
+    for (const ever in jsonData) {
+      length++;
+    }
+    return length;
+  }
+
 }
 
 module.exports = ToolService;
