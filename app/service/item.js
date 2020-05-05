@@ -25,7 +25,7 @@ class ItemService extends Service {
     const Item = await this.ctx.model.Item.Item;
     const query = await this.ctx.request.query;
     query.operatorID = await this.ctx.service.tools.getObjectId(query.operatorID);
-    query._id = await this.ctx.service.tools.getObjectId(query._id);
+    // query._id = await this.ctx.service.tools.getObjectId(query._id);
     // const length = await this.ctx.service.tools.getJsonLength(query);
     console.log('query内容：' + JSON.stringify(query));
     // operatorID: operatorId, $or: [{ itemName: query.itemName }, { itemState: query.itemState }]
