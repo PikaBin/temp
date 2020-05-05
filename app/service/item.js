@@ -170,7 +170,7 @@ class ItemService extends Service {
    */
   async updateItem() {
     const Item = await this.ctx.model.Item.Item;
-    const ItemUpdate = await this.ctx.model.Item.itemupdate;
+    const ItemUpdate = this.ctx.model.Item.Itemupdate;
     const updatedData = await this.ctx.request.body;
     const id = await this.ctx.query._id;
 
