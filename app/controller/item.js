@@ -43,6 +43,13 @@ class itemController extends Controller {
     this.ctx.body = result;
   }
 
+  // 删除任务中断要求
+  async deleteInterrupt() {
+    const id = await this.ctx.query._id;
+    const result = await this.ctx.service.item.deleteInterrupt(id);
+    this.ctx.body = result;
+  }
+
   // 新增分区表
   async addPartition() {
     const result = await this.ctx.service.item.addPartition();
