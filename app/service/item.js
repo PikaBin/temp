@@ -45,6 +45,8 @@ class ItemService extends Service {
             foreignField: 'itemId',
             as: 'interrupt',
           },
+        }, {
+          $sort: { itemAddTime: -1 },
         }]);
       // 如果查询有结果
       if (findResult) {
@@ -292,7 +294,7 @@ class ItemService extends Service {
     const Interrupt = this.ctx.model.Item.Interrupt;
     try {
       const interruptInstance = new Interrupt(data);
-      interruptInstance.save();
+      await interruptInstance.save();
       // 若没有异常，则返回数据以及成功消息
       return {
         information: '新增成功',
@@ -446,7 +448,7 @@ class ItemService extends Service {
     const taskInstance = new Task(this.ctx.request.body);
     try {
       // const saveResult = taskInstance.save();
-      taskInstance.save();
+      await taskInstance.save();
       // console.log('保存结果：' + result);
       // 成功返回的信息
       return {
