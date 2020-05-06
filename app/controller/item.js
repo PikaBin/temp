@@ -61,6 +61,12 @@ class itemController extends Controller {
     const result = await this.ctx.service.item.updatePartition();
     this.ctx.body = result;
   }
+  // 删除分区
+  async deletePartition() {
+    const id = await this.ctx.query._id;
+    const result = await this.ctx.service.item.deletePartition(id);
+    this.ctx.body = result;
+  }
 
   // 新增任务
   async addTask() {
@@ -72,6 +78,27 @@ class itemController extends Controller {
   async updateTask() {
     const result = await this.ctx.service.item.updateTask();
     this.ctx.body = result;
+  }
+
+  // 根据分区id, 查询分区下的任务
+  async queryTask() {
+    const partitionId = await this.ctx.query._id;
+    const Task = this.ctx.model.Item.Task;
+    // eslint-disable-next-line object-shorthand
+    const findResult = await Task.find({ partitionId: partitionId });
+    console.log(findResult);
+    if (findResult) {
+      this.ctx.body = {
+        information: '查询成功',
+        status: '0',
+        findResult,
+      };
+    } else {
+      this.ctx.body = {
+        information: '查询失败，查询的任务不存在',
+        status: '1',
+      };
+    }
   }
 
 
