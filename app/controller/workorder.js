@@ -27,6 +27,24 @@ class workorderController extends Controller {
     }
   }
 
+  // 手动增加工单
+  async workorderAdd_man() {
+    const result = await this.ctx.service.workorder.workorderAdd_man();
+    this.ctx.body = result;
+  }
+
+  // 手动增加工单日志
+  async workorderlog_man() {
+    const logInstance = await this.ctx.service.workorder.workorderlog_man();
+    this.ctx.body = logInstance;
+  }
+
+  // 手动增加 分单
+  async assign_man() {
+    const assignInstance = await this.ctx.service.workorder.assign_man();
+    this.ctx.body = assignInstance;
+  }
+
   // 获取派发列表
   async assignGet() {
 

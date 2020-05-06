@@ -36,7 +36,7 @@ class WorkorderService extends Service {
   }
   // 手动新增工单，测试用
   async workorderAdd_man() {
-    const Workorder = this.ctx.model.Workorder;
+    const Workorder = this.ctx.model.Workorder.Workorder;
     const workorderInstance = new Workorder(this.ctx.request.body);
     try {
       workorderInstance.save();
@@ -44,6 +44,54 @@ class WorkorderService extends Service {
         workorderInstance,
         status: '0',
         information: '新增成功',
+      };
+    } catch (err) {
+      console.log(err);
+      return {
+        status: '1',
+        error: err.message,
+        information: '新增失败',
+      };
+    }
+  }
+
+  /**
+   * 新增工单日志表 测试做数据
+   */
+  async workorderlog_man() {
+    const WorkorderLog = this.ctx.model.Workorder.Workorderlog;
+    const addData = this.ctx.request.body;
+    // console.log(addData);
+    try {
+      const logInstance = await WorkorderLog.create(addData);
+      return {
+        status: '0',
+        information: '新增成功',
+        logInstance,
+      };
+    } catch (err) {
+      console.log(err);
+      return {
+        status: '1',
+        error: err.message,
+        information: '新增失败',
+      };
+    }
+  }
+
+  /**
+   * 新增分单表 测试用
+   */
+  async assign_man() {
+    const Assign = this.ctx.model.Workorder.Assign;
+    const addData = this.ctx.request.body;
+    // console.log(addData);
+    try {
+      const assginInstance = await Assign.create(addData);
+      return {
+        status: '0',
+        information: '新增成功',
+        assginInstance,
       };
     } catch (err) {
       console.log(err);
@@ -160,9 +208,6 @@ class WorkorderService extends Service {
     Assgin.updateOne({ workorderID: workorder._id }, { $push: { log: { time: Date.now(), servicer: servicer.servicerId } } });
   }
 
-  // 检测专才是否及时确认工单，
-  // 获取工单派送给专才的时间，然后对该工单循环以下操作：过规定的时间（例如10分钟）后，检测该工单状态是否改变，
-  // 若变，则结束循环，
 
 }
 

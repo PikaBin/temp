@@ -31,21 +31,39 @@ module.exports = app => {
   router.post('/manager/deletecategory/', controller.category.deleteCategory); // 运营商修改品类申请
   router.post('/manager/uporoff', controller.category.upOroff); // 品类上下架
 
-  // 单品管理
+
+  /**
+   * 单品管理
+   */
+
+  // 新增
   router.post('/manager/additem/', controller.item.addItem); // 新增单品
   router.post('/manager/addInterrupt', controller.item.addInterrupt); // 新增任务中断要求
   router.post('/manager/addpartition', controller.item.addPartition); // 新增单品分区
   router.post('/manager/addtask', controller.item.addTask); // 新增任务
   router.post('/manager/additemImage', controller.item.getPhoto); // 上传单品图片，测试
-  router.get('/manager/queryitem', controller.item.queryItem); // 单品查询，根据运营商id
-  router.post('/manager/updateitem', controller.item.updateItem); // 单品更新
-  router.get('/manager/querybyitem', controller.item.queryByItem); // 品类查询,根据单品id
 
-  // 工单管理
+  // 查询
+  router.get('/manager/queryitem', controller.item.queryItem); // 单品查询，根据运营商id
+  router.get('/manager/querybyitem', controller.item.queryByItem); // 单品查询,根据单品id
+
+  // 更新
+  router.post('/manager/updatepartition', controller.item.updatePartition); // 更新分区
+  router.post('/manager/updateinterrupt', controller.item.updateInterrupt); // 更新中断要求
+  router.post('/manager/updateitem', controller.item.updateItem); // 单品更新
+  router.post('/manager/updatetask', controller.item.updateTask); // 任务更新
+
+
+  /**
+   * 工单管理
+   */
   router.get('/manager/neworder', controller.workorder.findOrder); // 返回新增订单
-  router.post('/manager/workorderadd', controller.workorder.workorderAdd); // 手动新增工单
+  router.post('/manager/workorderadd', controller.workorder.workorderAdd); // 自动新增工单
   router.get('/manager/workorderadd', controller.workorder.workorderAdd); // 返回系统自动新增的工单
   router.get('/manager/assign_get', controller.workorder.assignGet); // 返回可供分配的专才列表
+  router.post('/manager/workorderadd_man', controller.workorder.workorderAdd_man); // 手动增加工单
+  router.post('/manager/addworkorderlog/', controller.workorder.workorderlog_man); // 手动增加工单日志
+  router.post('/manager/assign', controller.workorder.assign_man); // 手动增加派单
 
   // 专才管理
   router.get('/manager/verifyServicerApply_get', controller.verify.getServicerApply); // 获取专才项目申请记录
