@@ -53,6 +53,9 @@ module.exports = app => {
   router.post('/manager/updateitem', controller.item.updateItem); // 单品更新
   router.post('/manager/updatetask', controller.item.updateTask); // 任务更新
 
+  // 删除
+  router.post('/manager/deleteInterrupt', controller.item.deleteInterrupt); // 删除中断请求
+
 
   /**
    * 工单管理
