@@ -22,13 +22,15 @@ class ItemService extends Service {
  * 按加入时间降序
  */
   async queryItem() {
+
     const Item = await this.ctx.model.Item.Item;
     const query = await this.ctx.request.query;
+    console.log('operatorID' + query.operatorID);
     query.operatorID = await this.ctx.service.tools.getObjectId(query.operatorID);
     // query._id = await this.ctx.service.tools.getObjectId(query._id);
-    // const length = await this.ctx.service.tools.getJsonLength(query);
+
     console.log('query内容：' + JSON.stringify(query));
-    // operatorID: operatorId, $or: [{ itemName: query.itemName }, { itemState: query.itemState }]
+
     try {
       const findResult = await Item.aggregate([{ $match: query },
         { $lookup: {
@@ -74,10 +76,10 @@ class ItemService extends Service {
    */
   async queryByItem() {
     const query = await this.ctx.request.query;
-    const id = await this.ctx.service.tools.getObjectId(query._id);
-    console.log('id:' + id);
+    query._id = await this.ctx.service.tools.getObjectId(query._id);
+    console.log('query' + JSON.stringify(query));
     const Item = this.ctx.model.Item.Item;
-    const findResult = await Item.aggregate([{ $match: { _id: id } },
+    const findResult = await Item.aggregate([{ $match: query },
       { $lookup: {
         from: 'partitions',
         localField: '_id',
@@ -132,7 +134,7 @@ class ItemService extends Service {
    * 新增单品分区
    */
   async addPartition() {
-    const Partition = this.ctx.model.Partition;
+    const Partition = this.ctx.model.Item.Partition;
     try {
       const partitionInstance = new Partition(this.ctx.request.body);
       partitionInstance.save();
@@ -157,16 +159,18 @@ class ItemService extends Service {
    */
   async updatePartition() {
     const Item = await this.ctx.model.Item.Item;
-    const PartitionUpdate = this.ctx.model.Item.Partitionupdate;
+    const Partition = await this.ctx.model.Item.Partition;
+    const PartitionUpdate = this.ctx.model.Item.Updatepartition;
     const updatedData = await this.ctx.request.body;
     const id = await this.ctx.query._id;
 
-    const findResult = await Item.findById(id);
-
+    const partitionInstance = await Partition.findById(id);
+    const belongItem = await Item.findById(partitionInstance.itemID);
+    console.log(partitionInstance, belongItem);
     try {
       // 判断单品是否上架
-      if (findResult.itemState === '0') {
-        const updateResult = await Item.updateOne({ _id: id }, updatedData);
+      if (belongItem.itemState === '0') {
+        const updateResult = await Partition.updateOne({ _id: id }, updatedData);
 
         // 判断是否修改成功
         if (updateResult.nModified === 0) {
@@ -184,14 +188,13 @@ class ItemService extends Service {
 
       }
       // 若已上架，则提交修改申请
-      const upInstance = new ItemUpdate({
+      const upInstance = new PartitionUpdate({
         timestamp: Date.now(),
-        ItemID: id, // 单品id
+        partitionID: id, // 分区id
         // auditResult: { type: String, default: '0' }, // 审核结果 0: 未审核，1：审核通过， 2：审核不通过
         // auditorID: { type: String, default: null }, // 审核人ID
         // auditTime: { type: String, required: false }, // 审核时间
         // applyTime: Date, // 申请时间
-        action: { type: String }, // up:上架，off:下架
         changedData: updatedData, // 因为修改而更新的数据
       });
       await upInstance.save();
@@ -219,7 +222,7 @@ class ItemService extends Service {
    */
   async addInterruption() {
     const data = await this.ctx.request.body;
-    const Interrupt = this.ctx.model.Interrupt;
+    const Interrupt = this.ctx.model.Item.Interrupt;
     try {
       const interruptInstance = new Interrupt(data);
       interruptInstance.save();
@@ -240,10 +243,72 @@ class ItemService extends Service {
   }
 
   /**
+   *编辑中断处理
+   */
+
+  async updateInterrupt() {
+    const Item = await this.ctx.model.Item.Item;
+    const Interrupt = await this.ctx.model.Item.Interrupt;
+    const InterruptUpdate = this.ctx.model.Item.Interruptupdate;
+    const updatedData = await this.ctx.request.body;
+    const id = await this.ctx.query._id;
+
+    const interruptInstance = await Interrupt.findById(id);
+    const belongItem = await Item.findById(interruptInstance.itemId);
+    console.log(interruptInstance, belongItem);
+    try {
+      // 判断单品是否上架
+      if (belongItem.itemState === '0') {
+        const updateResult = await Interrupt.updateOne({ _id: id }, updatedData);
+
+        // 判断是否修改成功
+        if (updateResult.nModified === 0) {
+          return {
+            information: '修改失败',
+            status: '1',
+          };
+        }
+        // 修改成功，返回数据
+        return {
+          information: '修改成功',
+          status: '0',
+          updateResult,
+        };
+
+      }
+      // 若已上架，则提交修改申请
+      const upInstance = new InterruptUpdate({
+        timestamp: Date.now(),
+        interruptID: id, // 分区id
+        // auditResult: { type: String, default: '0' }, // 审核结果 0: 未审核，1：审核通过， 2：审核不通过
+        // auditorID: { type: String, default: null }, // 审核人ID
+        // auditTime: { type: String, required: false }, // 审核时间
+        // applyTime: Date, // 申请时间
+        changedData: updatedData, // 因为修改而更新的数据
+      });
+      await upInstance.save();
+
+      return {
+        information: '提交修改申请成功',
+        status: '0',
+        upInstance,
+      };
+
+
+    } catch (err) {
+      console.log('/service/item' + err);
+      return {
+        information: '提交修改失败',
+        status: '1',
+        error: err.message,
+      };
+    }
+  }
+  /**
    * 新增任务
    */
   async addTask() {
-    const Task = this.ctx.model.Task;
+    const Task = this.ctx.model.Item.Task;
     const taskInstance = new Task(this.ctx.request.body);
     try {
       // const saveResult = taskInstance.save();
@@ -263,6 +328,70 @@ class ItemService extends Service {
       return {
         status: '1',
         information: '新增失败',
+        error: err.message,
+      };
+    }
+  }
+
+  /**
+   * 更新任务
+   */
+  async updateTask() {
+    const Item = await this.ctx.model.Item.Item;
+    // const Partition = await this.ctx.model.Item.Partition;
+    const Task = this.ctx.model.Item.Task;
+    const TaskUpdate = this.ctx.model.Item.Taskupdate;
+    const updatedData = await this.ctx.request.body;
+    const id = await this.ctx.query._id;
+
+    const taskInstance = await Task.findById(id).populate('partitionId', 'itemID');
+    console.log('task实例' + taskInstance);
+    const belongItem = await Item.findById(taskInstance.partitionId.itemID);
+    console.log(belongItem);
+    try {
+      // 判断单品是否上架
+      if (belongItem.itemState === '0') {
+        const updateResult = await Task.updateOne({ _id: id }, updatedData);
+
+        // 判断是否修改成功
+        if (updateResult.nModified === 0) {
+          return {
+            information: '修改失败',
+            status: '1',
+          };
+        }
+        // 修改成功，返回数据
+        return {
+          information: '修改成功',
+          status: '0',
+          updateResult,
+        };
+
+      }
+      // 若已上架，则提交修改申请
+      const upInstance = new TaskUpdate({
+        timestamp: Date.now(),
+        taskId: id, // 任务id
+        // auditResult: { type: String, default: '0' }, // 审核结果 0: 未审核，1：审核通过， 2：审核不通过
+        // auditorID: { type: String, default: null }, // 审核人ID
+        // auditTime: { type: String, required: false }, // 审核时间
+        // applyTime: Date, // 申请时间
+        changedData: updatedData, // 因为修改而更新的数据
+      });
+      await upInstance.save();
+
+      return {
+        information: '提交修改申请成功',
+        status: '0',
+        upInstance,
+      };
+
+
+    } catch (err) {
+      console.log('/service/item' + err);
+      return {
+        information: '提交修改失败',
+        status: '1',
         error: err.message,
       };
     }

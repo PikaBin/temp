@@ -37,15 +37,33 @@ class itemController extends Controller {
     }
   }
 
+  // 更新任务中断要求
+  async updateInterrupt() {
+    const result = await this.ctx.service.item.updateInterrupt();
+    this.ctx.body = result;
+  }
+
   // 新增分区表
   async addPartition() {
     const result = await this.ctx.service.item.addPartition();
     this.ctx.body = result;
   }
 
+  // 更新分区
+  async updatePartition() {
+    const result = await this.ctx.service.item.updatePartition();
+    this.ctx.body = result;
+  }
+
   // 新增任务
   async addTask() {
     const result = await this.ctx.service.item.addTask();
+    this.ctx.body = result;
+  }
+
+  // 更新任务
+  async updateTask() {
+    const result = await this.ctx.service.item.updateTask();
     this.ctx.body = result;
   }
 
@@ -89,7 +107,7 @@ class itemController extends Controller {
 
   }
   /**
-   * 品类查询,根据运营商id
+   * 单品查询,根据运营商id
    */
   async queryItem() {
     const options = await this.ctx.request.body;
@@ -98,7 +116,7 @@ class itemController extends Controller {
   }
 
   /**
-   * 品类查询,根据单品id
+   * 单品查询,根据单品id
    */
   async queryByItem() {
     const itemInstance = await this.ctx.service.item.queryByItem();
@@ -106,7 +124,7 @@ class itemController extends Controller {
   }
 
   /**
-   * 品类更新
+   * 单品更新
    */
   async updateItem() {
     const updateResult = await this.ctx.service.item.updateItem();
