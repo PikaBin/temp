@@ -10,10 +10,12 @@ module.exports = app => {
 
   const interruptSchema = new Schema({
     // _id: Schema.Types.ObjectId,
-    itemId: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
+    itemId: { type: Schema.Types.ObjectId, ref: 'Item', required: true },
     stage_from: String,
     stage_end: String,
     receivable: Number,
+    reason: String,
+    options: Schema.Types.Mixed, // 用于补充字段
   });
 
   return mongoose.model('Interrupt', interruptSchema);

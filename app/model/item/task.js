@@ -17,6 +17,8 @@ module.exports = app => {
     maxCompletionTime: Number, // 任务最大执行时长（单位：小时）
     passageConditions: String, // 任务通过条件
     receivable: Number, // 到达该任务的分成
+    reason: String,
+    options: Schema.Types.Mixed, // 用于补充字段
   });
   return mongoose.model('Task', taskSchema);
 };

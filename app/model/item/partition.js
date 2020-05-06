@@ -18,6 +18,8 @@ module.exports = app => {
     style: { type: String },
     detail: { type: String }, // 服务详情
     type: { type: String }, // 类型
+    reason: String,
+    options: Schema.Types.Mixed,
   });
 
   return mongoose.model('Partition', partitionSchema);
