@@ -15,11 +15,12 @@ module.exports = app => {
     introduction: { type: String, required: false },
     price: { type: Number, required: true },
     applicable: { type: String }, // 应用场景
+    industry: String, // 适用行业
     style: { type: String },
     detail: { type: String }, // 服务详情
     type: { type: String }, // 类型
-    reason: String,
-    options: Schema.Types.Mixed,
+    reason: String, // 弃用/上架理由
+    options: Schema.Types.Mixed, // 补充字段
   });
 
   return mongoose.model('Partition', partitionSchema);
