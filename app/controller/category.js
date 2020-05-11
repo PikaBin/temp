@@ -33,7 +33,7 @@ class categoryController extends Controller {
     const req = await this.ctx.request.body;
     const CAinstance = await this.ctx.service.category.updateCategory_O(req);
     this.ctx.body = CAinstance;
-    console.log(JSON.stringify(CAinstance));
+    // console.log(JSON.stringify(CAinstance));
   }
 
   // 查询品类
