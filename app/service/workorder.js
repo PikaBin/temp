@@ -9,6 +9,39 @@ const Service = require('egg').Service;
 
 class WorkorderService extends Service {
 
+  /**
+   * 查询工单
+   * 前端传入查询参数
+   */
+  async queryWorkorder() {
+    const Workorder = this.ctx.model.Workorder.Workorder;
+    const query = await this.ctx.query;
+
+    // 查询工单
+    try {
+      const findResult = await Workorder.find(query).sort({ startTime: -1 });
+      if (findResult) {
+        return {
+          status: '0',
+          information: '查询成功',
+          findResult,
+        };
+      }
+
+      return {
+        status: '1',
+        information: '查询失败',
+      };
+    } catch (err) {
+      console.log('/service/workorder', err);
+      return {
+        status: '1',
+        error: err.message,
+      };
+    }
+
+  }
+
   // 检测新增的订单，
   /**
    * 通过比较最新一条记录的订单id是否大于上一次检测订单id来判断是否更新，如果更新，然后取出新增的订单记录
@@ -108,6 +141,7 @@ class WorkorderService extends Service {
    * 根据订单表自动新增工单，通过检测订单表的更新从而新增对应的工单
    * 有bug,当运行findUpdatedOrder接口时，session.orderId就会更新，然后工单新增就会
    * 检测不到新的订单数据，然后对应的工单无法添加
+   * // 此处有坑，mongodb数据库存入的时间会自动转化为零时区的时间，给以后的查询带来很大不便
    */
   async workorderAdd() {
     // console.log('body内容：' + JSON.stringify(this.ctx.request.body));
@@ -116,7 +150,7 @@ class WorkorderService extends Service {
     const workorders = []; // 存放新增的工单，
     try {
       for (const order in newOrders) {
-        console.log('单个订单：' + order);
+        // console.log('单个订单：' + order);
         const workorderInstance = new Workorder({
           // _id: 自动生成
           W_name: order.orderId,
@@ -124,8 +158,7 @@ class WorkorderService extends Service {
           orderID: order.orderId,
           W_operatorID: null,
           W_state: 2, // 由于是新生成的工单，所以工单状态默认为2(待分配)
-          W_startTime: new Date(), // 此处有坑，mongodb数据库存入的时间会自动转化为零时区的时间，给以后的查询带来很大不便
-          // W_endTime: ,这个应该是工单实际结束时间还是预期结束时间，
+          W_startTime: new Date(),
           W_serverTime: order.orderStartTime,
           requirement: order.remark,
           customerPhone: order.phone,

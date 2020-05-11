@@ -56,6 +56,8 @@ module.exports = app => {
 
   // 删除
   router.post('/manager/deleteInterrupt', controller.item.deleteInterrupt); // 删除中断请求
+  router.delete('/manager/deletetask', controller.item.deleteTask); // 删除任务
+  router.delete('/manager/deletepartition', controller.item.deletePartition); // 删除分区以及附带的任务
 
 
   /**
@@ -68,6 +70,9 @@ module.exports = app => {
   router.post('/manager/workorderadd_man', controller.workorder.workorderAdd_man); // 手动增加工单
   router.post('/manager/addworkorderlog/', controller.workorder.workorderlog_man); // 手动增加工单日志
   router.post('/manager/assign', controller.workorder.assign_man); // 手动增加派单
+
+  // 查询
+  router.get('/manager/queryworkorder', controller.workorder.queryworkorder); // 查询工单
 
   // 专才管理
   router.get('/manager/verifyServicerApply_get', controller.verify.getServicerApply); // 获取专才项目申请记录

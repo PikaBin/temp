@@ -6,6 +6,12 @@ const Controller = require('egg').Controller;
 
 class workorderController extends Controller {
 
+  // 查询工单
+  async queryworkorder() {
+    const result = await this.ctx.service.workorder.queryWorkorder();
+    this.ctx.body = result;
+  }
+
   // 发现新订单，并且返回给前端
   async findOrder() {
     try {
