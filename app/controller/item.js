@@ -61,11 +61,32 @@ class itemController extends Controller {
     const result = await this.ctx.service.item.updatePartition();
     this.ctx.body = result;
   }
-  // 删除分区
+
+
+  /**
+   * 删除分区以及附属的任务
+   * 注意，应该先删除附属的任务，然后才能删除分区
+   */
   async deletePartition() {
     const id = await this.ctx.query._id;
+
+    // 查询属于该分区的任务
+    const attachedTask = await this.queryTask(id);
+
+    // 删除附带的任务，并把结果存储起来
+    const deleteTask = [];
+    for (const task in attachedTask) {
+      console.log('分区所属任务：' + task);
+      const taskresult = await this.ctx.service.deleteTask(task._id);
+      deleteTask.push(taskresult);
+    }
+
     const result = await this.ctx.service.item.deletePartition(id);
-    this.ctx.body = result;
+    // 返回结果
+    this.ctx.body = {
+      result,
+      deleteTask,
+    };
   }
 
   // 新增任务
@@ -102,6 +123,13 @@ class itemController extends Controller {
   }
 
 
+  // 删除任务
+  async deleteTask() {
+    const id = await this.ctx.query._id;
+    const result = await this.ctx.service.item.deleteTask(id);
+    this.ctx.body = result;
+  }
+  // 添加单品图片
   async getPhoto() {
     // 获取表单提交的文件流
     const stream = await this.ctx.getFileStream();
