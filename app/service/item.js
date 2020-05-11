@@ -220,7 +220,7 @@ class ItemService extends Service {
   }
 
   /**
-   * 删除单品分区
+   * 删除单品分区,以及下面的任务分区
    * @param {String}id 分区id
    */
   async deletePartition(id) {
@@ -230,9 +230,9 @@ class ItemService extends Service {
 
     // 查询所属单品
     const belongItem = await Partition.findById(id).populate('itemID', 'itemState');
-    // console.log(belongItem);
+    // console.log('populate结果' + belongItem);
     // 判断品类是否上架，然后做出相应操作，0为未上架
-    if (belongItem.itemState === '0') {
+    if (belongItem.itemID.itemState === '0') {
       try {
         const deleteResult = await Partition.deleteOne({ _id: id });
         if (deleteResult.deletedCount !== 0) {
@@ -249,7 +249,7 @@ class ItemService extends Service {
         };
 
       } catch (err) {
-        console.log('err信息：' + err);
+        console.log('deletePartition err信息：' + err);
         return {
           information: '删除失败',
           status: '1',
@@ -263,7 +263,7 @@ class ItemService extends Service {
         // 新增 删除申请记录
         const deleteInstance = await deletePartition.create({
           partitionId: id,
-          ItemId: belongItem.itemId._id,
+          ItemId: belongItem.itemID._id,
           deleteTime: new Date(), // 申请时间
           timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
           changedData: deleteData,
@@ -274,7 +274,7 @@ class ItemService extends Service {
           deleteInstance,
         };
       } catch (err) {
-        console.log('err信息：' + err);
+        console.log('deletePartition申请 err信息：' + err);
         return {
           state: '1',
           information: '提交删除失败',
@@ -312,7 +312,7 @@ class ItemService extends Service {
 
 
   /**
-    * 删除中断处理
+    * 删除中断要求
     */
 
   async deleteInterrupt(id) {
@@ -536,69 +536,71 @@ class ItemService extends Service {
    * 删除任务
    */
 
-  // async deleteTask(id) {
-  //   const Task = this.ctx.model.Item.Task;
-  //   const DeleteTask = this.ctx.model.Item.Deletetask;
-  //   const deleteData = await this.ctx.request.body;
+  async deleteTask(id) {
+    const Item = this.ctx.model.Item.Item;
+    const Task = this.ctx.model.Item.Task;
+    const DeleteTask = this.ctx.model.Item.Deletetask;
+    const deleteData = await this.ctx.request.body;
 
-  //   // 查询所属单品
-  //   const taskInstance = await Task.findById(id).populate('partitionId', 'itemID');
-  //   const belongItem = await Item.findById(taskInstance.partitionId.itemID);
-  //   console.log(belongItem);
-  //   // 判断品类是否上架，然后做出相应操作，0为未上架
-  //   if (belongItem.itemState === '0') {
-  //     try {
-  //       const deleteResult = await Interrupt.deleteOne({ _id: id });
-  //       if (deleteResult.deletedCount !== 0) {
-  //         return {
-  //           information: '删除成功',
-  //           status: '0',
-  //           deleteResult,
-  //         };
-  //       }
-  //       // 删除数量为空
-  //       return {
-  //         information: '删除失败',
-  //         status: '1',
-  //       };
+    // 查询所属单品
+    const taskInstance = await Task.findById(id).populate('partitionId', 'itemID');
+    // console.log(taskInstance);
+    const belongItem = await Item.findById(taskInstance.partitionId.itemID);
+    // console.log(belongItem);
+    // 判断品类是否上架，然后做出相应操作，0为未上架
+    if (belongItem.itemState === '0') {
+      try {
+        const deleteResult = await Task.deleteOne({ _id: id });
+        if (deleteResult.deletedCount !== 0) {
+          return {
+            information: '删除成功',
+            status: '0',
+            deleteResult,
+          };
+        }
+        // 删除数量为空
+        return {
+          information: '删除失败',
+          status: '1',
+        };
 
-  //     } catch (err) {
-  //       console.log('err信息：' + err);
-  //       return {
-  //         information: '删除失败',
-  //         status: '1',
-  //         error: err.message,
-  //       };
-  //     }
-  //     // 若品类已上架，则提交修改申请
-  //   } else {
+      } catch (err) {
+        console.log('err信息：' + err);
+        return {
+          information: '删除失败',
+          status: '1',
+          error: err.message,
+        };
+      }
+      // 若品类已上架，则提交修改申请
+    } else {
 
-  //     try {
-  //       // 新增 删除申请记录
-  //       const deleteInstance = await DeleteInterrupt.create({
-  //         interruptId: id,
-  //         ItemId: belongItem.itemId._id,
-  //         deleteTime: new Date(), // 申请时间
-  //         // verifyTime: null, // 审核时间
-  //         timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
-  //         changedData: deleteData,
-  //       });
-  //       return {
-  //         state: '0',
-  //         information: '提交删除成功，请等待审核',
-  //         deleteInstance,
-  //       };
-  //     } catch (err) {
-  //       console.log('err信息：' + err);
-  //       return {
-  //         state: '1',
-  //         information: '提交删除失败',
-  //         error: err.message,
-  //       };
-  //     }
+      try {
+        // 新增 删除申请记录
+        const deleteInstance = await DeleteTask.create({
+          partitionId: taskInstance.partitionId._id,
+          TaskId: id,
+          deleteTime: new Date(), // 申请时间
+          // verifyTime: null, // 审核时间
+          timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
+          changedData: deleteData,
+        });
+        return {
+          state: '0',
+          information: '提交删除成功，请等待审核',
+          deleteInstance,
+        };
+      } catch (err) {
+        console.log('deleteTask err信息：' + err);
+        return {
+          state: '1',
+          information: '提交删除失败',
+          error: err.message,
+        };
+      }
 
-  //   }
-  // }
+    }
+  }
   /**
    * 更新单品
    * 前端传入单品数据，
@@ -664,71 +666,72 @@ class ItemService extends Service {
   }
   /**
      * 删除单品
-     * 删除单品是否也要顺便把下面的中断要求，分区，任务等等都要删除
+     * 删除单品是否也要顺便把下面的中断要求，分区，任务等等都要删除: 是的
      * 判断是否上架
      */
-  // async deleteItem() {
-  //   const Item = this.ctx.model.Item.Item;
-  //   const DeleteItem = this.ctx.model.Item.Deleteitem;
-  //   const deleteInstance = await Item.findById(this.ctx.query._id);
-  //   const CategoryDelete = this.ctx.model.Deletecategory;
-  //   const deleteData = await this.ctx.request.body;
-  // console.log(deleteInstance);
+  async deleteItem() {
+    const Item = this.ctx.model.Item.Item;
+    const Partition = this.ctx.model.Item.Partition;
+    const DeleteItem = this.ctx.model.Item.Deleteitem;
+    const deleteInstance = await Item.findById(this.ctx.query._id);
+    const CategoryDelete = this.ctx.model.Deletecategory;
+    const deleteData = await this.ctx.request.body;
+    console.log(deleteInstance);
 
-  // 判断品类是否上架，然后做出相应操作，0为未上架
-  //   if (deleteInstance.categoryState === '0') {
-  //     try {
-  //       const deleteResult = await Category.deleteOne({ _id: this.ctx.query._id });
-  //       if (deleteResult.deletedCount !== 0) {
-  //         return {
-  //           information: '删除成功',
-  //           status: '0',
-  //           deleteResult,
-  //         };
-  //       }
-  //       // 删除数量为空
-  //       return {
-  //         information: '删除失败',
-  //         status: '1',
-  //       };
+    // 判断品类是否上架，然后做出相应操作，0为未上架
+    if (deleteInstance.categoryState === '0') {
+      try {
+        const deleteResult = await Category.deleteOne({ _id: this.ctx.query._id });
+        if (deleteResult.deletedCount !== 0) {
+          return {
+            information: '删除成功',
+            status: '0',
+            deleteResult,
+          };
+        }
+        // 删除数量为空
+        return {
+          information: '删除失败',
+          status: '1',
+        };
 
-  //     } catch (err) {
-  //       console.log('err信息：' + err);
-  //       return {
-  //         information: '删除失败',
-  //         status: '1',
-  //         error: err.message,
-  //       };
-  //     }
-  //     // 若品类已上架，则提交修改申请
-  //   } else {
+      } catch (err) {
+        console.log('err信息：' + err);
+        return {
+          information: '删除失败',
+          status: '1',
+          error: err.message,
+        };
+      }
+      // 若品类已上架，则提交修改申请
+    } else {
 
-  //     try {
-  //       // 新增 删除申请记录
-  //       const CDInstance = await CategoryDelete.create({
-  //         categoryID: this.ctx.query._id, // 品类ID
-  //         applyTime: new Date(), // 申请时间
-  //         verifyTime: null, // 审核时间
-  //         timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
-  //         deleteData,
-  //       });
-  //       console.log('service层：' + CDInstance);
-  //       return {
-  //         state: '0',
-  //         information: '提交删除成功，请等待审核',
-  //         CDInstance,
-  //       };
-  //     } catch (err) {
-  //       console.log('err信息：' + err);
-  //       return {
-  //         state: '1',
-  //         information: '提交删除失败',
-  //         error: err.message,
-  //       };
-  //     }
+      try {
+        // 新增 删除申请记录
+        const CDInstance = await CategoryDelete.create({
+          categoryID: this.ctx.query._id, // 品类ID
+          applyTime: new Date(), // 申请时间
+          verifyTime: null, // 审核时间
+          timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
+          deleteData,
+        });
+        console.log('service层：' + CDInstance);
+        return {
+          state: '0',
+          information: '提交删除成功，请等待审核',
+          CDInstance,
+        };
+      } catch (err) {
+        console.log('err信息：' + err);
+        return {
+          state: '1',
+          information: '提交删除失败',
+          error: err.message,
+        };
+      }
 
-  //   }
-  // }
+    }
+  }
 
   /**
    * 上架单品

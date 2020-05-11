@@ -43,7 +43,8 @@ class OperatorInfo extends Service {
 
   }
   /**
-  * 此处有个问题，如果查询没有得到结果，前端只会得到一个created的值；现在进行初步改进，加一个if判断；
+  * 此处有个问题，如果查询没有得到结果，前端只会得到一个created的值；
+  * 现在进行初步改进，加一个if判断；
   */
   async queryOperator() {
     const Operator = this.ctx.model.Operator;

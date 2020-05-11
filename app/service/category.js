@@ -42,7 +42,10 @@ class CategoryService extends Service {
     // 查询要更新的品类
     const Category = await this.ctx.model.Category;
     const updateInstance = await Category.findById(this.ctx.query._id);
-    console.log(updateInstance);
+
+    const Adjust = this.ctx.model.Adjust;
+    const updatedData = await this.ctx.request.body;
+    // console.log(updateInstance);
     // 判断品类是否上架，然后做出相应操作，0为未上架
     if (updateInstance.categoryState === '0') {
       try {
@@ -71,23 +74,28 @@ class CategoryService extends Service {
       }
       // 若品类已上架，则提交修改申请
     } else {
-      const CategoryAsk = await this.ctx.model.CategoryAsk;
-      const CAInstance = new CategoryAsk(data);
-      CAInstance.timestamp = Date.now(); // 因为model表中默认时间戳的值不会更新，所以在这里改变
-      // console.log('service层：' + CAInstance);
+      // 品类上架的状况
       try {
-        CAInstance.save();
+        const categoryAdjust = await Adjust.create({
+          object: 'c',
+          objectId: this.ctx.query._id,
+          action: '0', // 表明 是 增加申请
+          verifyTime: null, // 审核时间
+          timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
+          changedData: updatedData,
+        });
+
         return {
-          state: '0', // 修改成功
-          information: '提交修改成功，请等待审核',
-          CAInstance,
+          status: '1',
+          information: '提交修改申请成功',
+          categoryAdjust,
         };
       } catch (err) {
         console.log('err信息：' + err);
         return {
           state: '1',
           information: '提交修改失败',
-          CAInstance,
+          error: err.message,
         };
       }
 
@@ -109,7 +117,7 @@ class CategoryService extends Service {
     // 获取要删除的品类
     const Category = await this.ctx.model.Category;
     const deleteInstance = await Category.findById(this.ctx.query._id);
-    const CategoryDelete = this.ctx.model.Deletecategory;
+    const Adjust = this.ctx.model.Adjust;
     const deleteData = await this.ctx.request.body;
     // console.log(deleteInstance);
 
@@ -143,12 +151,13 @@ class CategoryService extends Service {
 
       try {
         // 新增 删除申请记录
-        const CDInstance = await CategoryDelete.create({
-          categoryID: this.ctx.query._id, // 品类ID
-          applyTime: new Date(), // 申请时间
+        const CDInstance = await Adjust.create({
+          object: 'c',
+          objectId: this.ctx.query._id,
+          action: '2', // 表明 是 删除申请
           verifyTime: null, // 审核时间
           timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
-          deleteData,
+          changedData: deleteData,
         });
         console.log('service层：' + CDInstance);
         return {
@@ -173,31 +182,34 @@ class CategoryService extends Service {
     // 获取前端的id和数据
     const id = await this.ctx.query._id;
     const Category = this.ctx.model.Category;
-    const CategoryJudge = this.ctx.model.CategoryJudge;
+    const Adjust = this.ctx.model.Adjust;
     const data = await Category.findById(id);
     const changedData = await this.ctx.request.body; // 获取前端上下架时传下来的数据
 
     // 上/下架，新增记录，返回
     try {
-      const upInstance = await CategoryJudge.create({
-        timestamp: Date.now(), // 时间戳
-        categoryID: id, // 品类id
-        changedData,
-        // auditResult: { type: String, default: '0' }, // 审核结果 0: 未审核，1：审核通过， 2：审核不通过
-        // auditorID: { type: String, default: null }, // 审核人ID
-        // auditTime: { type: String, required: false }, // 审核时间
-        // applyTime: Date,
-      });
+      let upOroff = '3';
       if (data.categoryState === '0') {
-        upInstance.action = 'up';
+        upOroff = '3';
       } else {
-        upInstance.action = 'off';
+        upOroff = '4';
       }
+
+      const upInstance = await Adjust.create({
+        object: 'c',
+        objectId: this.ctx.query._id,
+        action: upOroff,
+        verifyTime: null, // 审核时间
+        timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
+        changedData,
+      });
+
       return {
         information: '提交请求成功',
         status: '0',
         upInstance,
       };
+
     } catch (err) {
       return {
         information: '提交请求失败',
