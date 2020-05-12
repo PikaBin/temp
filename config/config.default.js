@@ -15,7 +15,7 @@ module.exports = appInfo => {
   config.keys = appInfo.name + '_1578279037752_3622';
 
   // add your middleware config here
-  // config.middleware = [ 'csrfAuth' ];
+  config.middleware = [ 'csrfAuth' ];
 
   // add your user config here
   const userConfig = {
@@ -50,8 +50,8 @@ module.exports = appInfo => {
   exports.security = {
     domainWhiteList: [ 'http://localhost:8000', 'http://localhost:3000', 'http://localhost:7002', 'http://localhost:7001', 'http://localhost:8001', 'http://localhost:3001' ],
     csrf: {
-      ignore: '/manager',
-      enable: false,
+      // ignore: '/manager',
+      enable: true,
       ignoreJSON: true,
     },
   };
