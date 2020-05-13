@@ -78,4 +78,9 @@ module.exports = app => {
   router.get('/manager/verifyServicerApply_get', controller.verify.getServicerApply); // 获取专才项目申请记录
   router.post('/manager/verifyServiceApply_post/', controller.verify.verifySericeApply); // 审核 专才申请
 
+  /**
+   * 消息管理
+   */
+  router.get('/manager/getnews', controller.news.getNews); // 运营商获取平台消息
+
 };
