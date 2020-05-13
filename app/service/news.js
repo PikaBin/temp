@@ -40,10 +40,12 @@ class NewsService extends Service {
    */
   async getNews() {
     const News = this.ctx.model.Verify.News;
-    const id = this.ctx.query._id;
-    const r = this.ctx.query.read;
+    const query = this.ctx.query;
+    console.log(query);
+    // const id = this.ctx.query._id;
+    // const r = this.ctx.query.read;
     try {
-      const findresult = await News.find({ 'verifiedData.categoryOperator': id, read: r });
+      const findresult = await News.find(query);
 
       if (findresult.length !== 0) {
         return {
