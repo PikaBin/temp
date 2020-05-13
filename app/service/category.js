@@ -68,7 +68,7 @@ class CategoryService extends Service {
         console.log('err信息：' + err);
         return {
           information: '更新失败',
-          status: '1',
+          status: '0',
           error: err.message,
         };
       }
@@ -79,7 +79,7 @@ class CategoryService extends Service {
         const categoryAdjust = await Adjust.create({
           object: 'c',
           objectId: this.ctx.query._id,
-          action: '1', // 表明 是 增加申请
+          action: '1', // 表明 是 修改申请
           verifyTime: null, // 审核时间
           timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
           changedData: updatedData,
@@ -93,7 +93,7 @@ class CategoryService extends Service {
       } catch (err) {
         console.log('err信息：' + err);
         return {
-          state: '1',
+          state: '0',
           information: '提交修改失败',
           error: err.message,
         };
@@ -128,21 +128,21 @@ class CategoryService extends Service {
         if (deleteResult.deletedCount !== 0) {
           return {
             information: '删除成功',
-            status: '0',
+            status: '1',
             deleteResult,
           };
         }
         // 删除数量为空
         return {
           information: '删除失败',
-          status: '1',
+          status: '0',
         };
 
       } catch (err) {
         console.log('err信息：' + err);
         return {
           information: '删除失败',
-          status: '1',
+          status: '0',
           error: err.message,
         };
       }
@@ -161,14 +161,14 @@ class CategoryService extends Service {
         });
         console.log('service层：' + CDInstance);
         return {
-          state: '0',
+          state: '1',
           information: '提交删除成功，请等待审核',
           CDInstance,
         };
       } catch (err) {
         console.log('err信息：' + err);
         return {
-          state: '1',
+          state: '0',
           information: '提交删除失败',
           error: err.message,
         };
@@ -206,14 +206,14 @@ class CategoryService extends Service {
 
       return {
         information: '提交请求成功',
-        status: '0',
+        status: '1',
         upInstance,
       };
 
     } catch (err) {
       return {
         information: '提交请求失败',
-        status: '1',
+        status: '0',
         error: err.message,
       };
     }
