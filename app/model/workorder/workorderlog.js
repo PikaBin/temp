@@ -19,7 +19,8 @@ module.exports = app => {
     Customerfeedback: { type: String }, // 顾客点评内容
     deadline: { type: Date }, // 任务最迟完成时间点
     state: { type: String, required: true }, // 任务的状态（0 – 任务未开始 / 1 – 任务进行中 / 2 – 任务完成 / 3 – 任务中止）
-
+    serverFeedbackImg: String, // 专才反馈，图片形式
+    serverFeedbackText: String, // 专才反馈，文字形式
   });
 
   return mongoose.model('Workorderlog', workOrderlogSchema);

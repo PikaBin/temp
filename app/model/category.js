@@ -34,7 +34,7 @@ module.exports = app => {
     categoryAddTime: { type: Date, required: true },
     categoryReviseTime: { type: Date },
     categoryDeleteTime: { type: Date },
-    categoryverifyTime: Date,
+    categoryverifyTime: Date, // 审核时间
   });
 
   return mongoose.model('Category', categorySchema);
