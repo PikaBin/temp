@@ -79,7 +79,7 @@ class CategoryService extends Service {
         const categoryAdjust = await Adjust.create({
           object: 'c',
           objectId: this.ctx.query._id,
-          action: '0', // 表明 是 增加申请
+          action: '1', // 表明 是 增加申请
           verifyTime: null, // 审核时间
           timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
           changedData: updatedData,
