@@ -67,6 +67,8 @@ module.exports = app => {
   router.post('/manager/workorderadd', controller.workorder.workorderAdd); // 自动新增工单
   router.get('/manager/workorderadd', controller.workorder.workorderAdd); // 返回系统自动新增的工单
   router.get('/manager/assign_get', controller.workorder.assignGet); // 返回可供分配的专才列表
+  router.post('/manager/assignpost', controller.workorder.assignPost); // 派单
+
   router.post('/manager/workorderadd_man', controller.workorder.workorderAdd_man); // 手动增加工单
   router.post('/manager/addworkorderlog/', controller.workorder.workorderlog_man); // 手动增加工单日志
   router.post('/manager/assign', controller.workorder.assign_man); // 手动增加派单

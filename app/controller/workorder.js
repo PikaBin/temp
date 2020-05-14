@@ -54,21 +54,21 @@ class workorderController extends Controller {
   // 获取派发列表
   async assignGet() {
 
-    try {
-      const badServicers = await this.ctx.request.body.badServicers; // 沟通，让前端进行增添这个字段
-      console.log('body:' + JSON.stringify(badServicers));
-      const result = await this.ctx.service.workorder.assignGet(badServicers);
-      this.ctx.body = {
-        status: '1',
-        result,
-      };
-    } catch (err) {
-      console.log('err信息：' + err);
-      this.ctx.body = {
-        status: '0',
-        information: '获取专才列表失败',
-      };
-    }
+
+    const badServicers = await this.ctx.request.body.badServicers; // 沟通，让前端进行增添这个字段
+    // console.log('body:' + JSON.stringify(badServicers));
+    const result = await this.ctx.service.workorder.assignGet(badServicers);
+    this.ctx.body = {
+      status: '1',
+      result,
+    };
+
+  }
+
+  // 派发工单
+  async assignPost() {
+    const result = await this.ctx.service.workorder.assign_post();
+    this.ctx.body = result;
   }
 }
 module.exports = workorderController;
