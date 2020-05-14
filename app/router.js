@@ -47,6 +47,7 @@ module.exports = app => {
   router.get('/manager/queryitem', controller.item.queryItem); // 单品查询，根据运营商id
   router.get('/manager/querybyitem', controller.item.queryByItem); // 单品查询,根据单品id
   router.get('/manager/querytask', controller.item.queryTask); // 查询任务，根据分区id
+  router.get('/manager/querypartition', controller.partition.queryPartition); // 根据单品分区id,查询单品信息
 
   // 更新
   router.post('/manager/updatepartition', controller.item.updatePartition); // 更新分区
