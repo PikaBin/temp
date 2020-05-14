@@ -82,5 +82,6 @@ module.exports = app => {
    * 消息管理
    */
   router.get('/manager/getnews', controller.news.getNews); // 运营商获取平台消息
+  router.post('/manager/setread', controller.news.setRead); // 消息阅读状态改变
 
 };

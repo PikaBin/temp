@@ -42,8 +42,6 @@ class NewsService extends Service {
     const News = this.ctx.model.Verify.News;
     const query = this.ctx.query;
     console.log(query);
-    // const id = this.ctx.query._id;
-    // const r = this.ctx.query.read;
     try {
       const findresult = await News.find(query);
 
@@ -65,6 +63,39 @@ class NewsService extends Service {
       return {
         information: '查询失败',
         status: '0',
+        error: err.message,
+      };
+    }
+  }
+
+  /**
+   * 消息阅读状态改变
+   */
+  async setRead() {
+
+    const News = await this.ctx.model.Verify.News;
+    const id = await this.ctx.query._id;
+
+    try {
+      const updatedResult = await News.updateOne({ _id: id}, {read: '1'});
+
+      if(updatedResult.nModified !== 0) {
+        return {
+          status: '1',
+          information: '消息已读',
+          updatedResult,
+        }
+      }
+
+      return {
+        status: '0',
+        information: '数据库更新数为0，消息仍未读',
+      };
+    } catch (err) {
+      console.log('setread: ', err);
+      return {
+        status: '0',
+        information: '数据库更新异常，消息仍未读',
         error: err.message,
       };
     }
