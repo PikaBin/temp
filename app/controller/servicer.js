@@ -10,5 +10,6 @@ class ServicerController extends Controller {
     const result = await this.ctx.service.servicer.queryServicer();
     this.ctx.body = result;
   }
+
 }
 module.exports = ServicerController;
