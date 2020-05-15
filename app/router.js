@@ -87,4 +87,9 @@ module.exports = app => {
   router.get('/manager/getnews', controller.news.getNews); // 运营商获取平台消息
   router.post('/manager/setread', controller.news.setRead); // 消息阅读状态改变
 
+  /**
+   * 专才管理
+   */
+  router.get('/manager/queryservicer', controller.servicer.queryServicer); // 查询专才
+
 };

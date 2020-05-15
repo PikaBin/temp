@@ -11,15 +11,13 @@ module.exports = app => {
 
   const workOrderlogSchema = new Schema({
     workorderId: { type: Schema.Types.ObjectId, ref: 'Workorder' }, // 所属工单
-    name: { type: String, required: true }, // 任务名称
-    content: { type: String, required: true }, // 任务内容
+    taskId: { type: Schema.Types.ObjectId, ref: 'Task' }, // 任务id
     start: { type: Date }, // 开始时间
     end: { type: Date }, // 结束时间
-    Servicerfeedback: { type: String }, // 专才反馈内容
-    Customerfeedback: { type: String }, // 顾客点评内容
+    customerfeedback: { type: String }, // 顾客点评内容
     deadline: { type: Date }, // 任务最迟完成时间点
     state: { type: String, required: true }, // 任务的状态（0 – 任务未开始 / 1 – 任务进行中 / 2 – 任务完成 / 3 – 任务中止）
-    serverFeedbackImg: String, // 专才反馈，图片形式
+    serverFeedbackImg: Array, // 专才反馈，图片形式
     serverFeedbackText: String, // 专才反馈，文字形式
   });
 
