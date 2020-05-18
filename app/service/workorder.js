@@ -43,12 +43,6 @@ class WorkorderService extends Service {
 
   }
 
-  // 检测新增的订单，
-  /**
-   * 通过比较最新一条记录的订单id是否大于上一次检测订单id来判断是否更新，如果更新，然后取出新增的订单记录
-   * 没有更新，返回给前端null,
-   */
-
 
   // 手动新增工单，测试用
   async workorderAdd_man() {
@@ -122,12 +116,13 @@ class WorkorderService extends Service {
   /**
    * 派发工单_get
    * 前端传入待分配工单id,后端返回专才列表，
-   * 获取要派发的工单，通过匹配专才的可接项目，在接项目数量，在职状态，来确定一个可用专才列表，从而返回给前端
+   * 获取要派发的工单，通过匹配专才的可接项目，在接项目数量，在职状态，排除已经拒单的专才，来确定一个可用专才列表，从而返回给前端
    */
-  async assignGet(badServicers) {
+  async assignGet() {
     try {
       const Servicer = this.ctx.model.Servicer;
       const Workorder = this.ctx.model.Workorder.Workorder;
+      const Assign = this.ctx.model.Workorder.Assign;
 
       // 获取要派发的工单id
       const id = this.ctx.query._id;
@@ -139,12 +134,26 @@ class WorkorderService extends Service {
       // console.log(relatedItem, typeof (relatedItem));
       // console.log('长什么样子呢：' + workorderInstance);
 
-      // 查找符合条件的专才（在职状态为正常，在接项目小于最大可接项目数量，可接项目与工单上的一致,
+      // 获取已经拒单的专才
+      const assignInstance = await Assign.find({ workorderID: id, $where: function() { return this.log.length > 0; } });
+      console.log('拒单专才：' + assignInstance);
+      // 取出拒单的专才id,存放在数组里面
+      const badServicers = [];
+      for (let i = 0; i < assignInstance.length; i++) {
+        // 取出对应的log
+        const log = assignInstance[i].log;
+        for (let j = 0; j < log.length; j++) {
+          const badServicer = log[j].servicerID;
+          badServicers.push(badServicer);
+        }
+      }
+      // console.log('log符合条件吗：', badServicers);
 
-      // $in 操作符 表示servicerItem的元素 至少匹配itemname的一项,暂时
+      // 查找符合条件的专才（在职状态为正常，在接项目小于最大可接项目数量，可接项目与工单上的一致,排除掉拒单专才）
+
+      // $in 操作符 表示servicerItem的元素 至少匹配itemname的一项
       const candidates = await Servicer.find({ $where: function() { return this.workordering < this.maxWorkOrder; },
-        servicerStatus: true, servicerItem: { $in: [ item ] } });
-
+        servicerStatus: true, servicerItem: { $in: [ item ] }, _id: { $nin: badServicers } });
 
       // 返回符合条件的专才，和已经拒单的专才(返回全部字段吗？)
       if (candidates) {
@@ -152,7 +161,6 @@ class WorkorderService extends Service {
           status: '1',
           information: '查询成功，返回专才列表',
           candidates,
-          badServicers,
         };
       }
 
@@ -223,7 +231,6 @@ class WorkorderService extends Service {
     }
 
   }
-
 
 }
 
