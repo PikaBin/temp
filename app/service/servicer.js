@@ -34,5 +34,8 @@ class Servicer extends Service {
       };
     }
   }
+
+  // 专才合约
+
 }
 module.exports = Servicer;

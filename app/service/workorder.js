@@ -11,6 +11,34 @@ const Service = require('egg').Service;
 class WorkorderService extends Service {
 
   /**
+   * 向专才发送消息
+   */
+  async sendServicer(operatorId, workorderId, servicerId) {
+    const Operator = this.ctx.model.Operator;
+    const News = this.ctx.model.Verify.News;
+    const operator = await Operator.findById(operatorId);
+    const ServicerId = await this.ctx.service.tools.getObjectId(servicerId);
+    const news = await News.create({
+      receiveId: ServicerId, // 消息接受方的id
+      senderId: operatorId,
+      auditorName: operator.operatorName, // 发送消息者姓名
+      object: 'o', // 发送对象标识 o:运营商，p:平台，z:专才，y:用户
+      action: 'p', // 动作标识 处理动作标识 t:提交审核，q:确认审核，p:派单，j:接单
+      detailObject: 'g', // 具体处理对象标识 c:品类	t:任务  o:运营商	z:专才 I:单品	log:工作日志  p:分区	g:工单
+      detailObjectId: workorderId, // 具体处理对象id
+      result: '0', // 处理结果 0 – 未处理 / 1 – 成功 / 2 – 不成功
+      timestamp: Date.now(),
+      content: '系统已经派送一份工单，请注意查收',
+    });
+
+    if (news) {
+      return news;
+    }
+    return null;
+  }
+
+
+  /**
    * 查询工单
    * 前端传入查询参数
    */
@@ -192,6 +220,7 @@ class WorkorderService extends Service {
     const Workorder = this.ctx.model.Workorder.Workorder;
     const workorderId = await this.ctx.query.workorderId; // 获取要派送的工单内容
     const servicerId = await this.ctx.query.servicerId; // 获取前端选中的专才
+    const operatorId = await this.ctx.query.operatorId; // 负责派单的运营商id
 
     // 向派单表中插入新记录
     const Assign = this.ctx.model.Workorder.Assign;
@@ -207,13 +236,18 @@ class WorkorderService extends Service {
       // Assgin.updateOne({ workorderID: workorder._id }, { $push: { log: { time: Date.now(), servicer: servicer.servicerId } } });
 
       if (assignResult) {
-        // 更新工单状态为已派单为进行
+        // 更新工单状态为已派单未进行
+        // eslint-disable-next-line no-unused-vars
         const updateState = await Workorder.updateOne({ _id: workorderId }, { state: '5' });
-        console.log('分配后的工单状态是否改变 ' + updateState);
+        // console.log('分配后的工单状态是否改变 ' + updateState);
+
+        // 向专才发送消息
+        const news = await this.sendServicer(operatorId, workorderId, servicerId);
         return {
           information: '派单成功',
           status: '1',
           assignResult,
+          news,
         };
       }
 
@@ -232,6 +266,63 @@ class WorkorderService extends Service {
 
   }
 
+  // 检测拒单情况，然后改变状态
+  async isRefuse() {
+    const Assign = this.ctx.model.Workorder.Assign;
+
+    try {
+      const refuseInstances = await Assign.find({ state: '0' }).limit(1);
+
+      if (refuseInstances.length !== 0) {
+        // 循环改变状态
+        for (let i = 0; i < refuseInstances.length; i++) {
+          const refuse = refuseInstances[i];
+          // console.log('拒单的记录：', refuse);
+
+          await Assign.updateOne({ _id: refuse._id }, { state: '1' });
+        }
+        console.log('自动检测拒单正在执行');
+      }
+      console.log('没有拒单状况出现');
+    } catch (err) {
+      console.log('isRefuse: ' + err);
+      return {
+        information: '自动拒单系统出现异常',
+        error: err.message,
+      };
+    }
+  }
+
+  // 查看工单反馈记录
+  async checkWorkorder() {
+    const query = await this.ctx.query.query;
+    const WorkorderLog = await this.ctx.model.Workorderlog;
+    try {
+      const workorderLogs = await WorkorderLog.find({ query });
+      if (workorderLogs) {
+        return {
+          information: '查询工单反馈成功',
+          status: '1',
+          workorderLogs,
+        };
+      }
+      // 查询为空
+      return {
+        information: '查询成功，但结果为空',
+        status: '0',
+      };
+
+    } catch (err) {
+      console.log('checkworkorder', err);
+      return {
+        information: '查询失败',
+        status: '0',
+        error: err.message,
+      };
+    }
+
+
+  }
 }
 
 module.exports = WorkorderService;

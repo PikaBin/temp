@@ -70,5 +70,11 @@ class workorderController extends Controller {
     const result = await this.ctx.service.workorder.assign_post();
     this.ctx.body = result;
   }
+
+  // 检测拒单
+  async refuse() {
+    const result = await this.ctx.service.workorder.isRefuse();
+    this.ctx.body = result;
+  }
 }
 module.exports = workorderController;

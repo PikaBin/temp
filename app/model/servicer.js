@@ -8,7 +8,7 @@ module.exports = app => {
     // _id : Schema.Types.ObjectId, // 专才id
     servicerZhanghao: { type: String, required: true }, // 专才账号
     password: { type: String, required: true }, // 专才密码
-    // servicerId: {type: String, required: true}, //专才ID
+    operatorId: { type: Schema.Types.ObjectId, required: false, default: new mongoose.Types.ObjectId('5ead80ee74243c4bc453abfd') }, // 5ead80ee74243c4bc453abfd
     servicerName: { type: String, required: false }, // 专才姓名
     servicerEmail: { type: String, required: false }, // 专才邮箱
     servicerProfilePhoto: { type: String, required: false }, // 专才头像
