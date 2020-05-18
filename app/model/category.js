@@ -31,9 +31,8 @@ module.exports = app => {
     categoryMinContent: { type: Number },
     categoryExamineTF: { type: String, required: true, default: '0' }, // 0 – 未通过上架/  1 – 通过上架/  2 – 未通过修改/  3 – 通过修改/  4 – 未通过下架/  5 – 下架
     categoryReason: { type: String },
-    categoryAddTime: { type: Date, required: true },
+    categoryAddTime: { type: Date, required: true, default: new Date() },
     categoryReviseTime: { type: Date },
-    categoryDeleteTime: { type: Date },
     categoryverifyTime: Date, // 审核时间
   });
 
