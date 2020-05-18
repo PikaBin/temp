@@ -13,7 +13,7 @@ class Servicer extends Service {
     try {
       const findResult = await Servicer.find(query);
 
-      if (findResult) {
+      if (findResult.length !== 0) {
         return {
           information: '查询成功',
           status: '1',

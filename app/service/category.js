@@ -37,13 +37,16 @@ class CategoryService extends Service {
    * 如果未上架，直接修改，然后返回修改后的品类数据；
    * 获取前端更新值，存储到品类申请表，等待平台审核
    * state为0为修改失败，为1则成功
+   * 前端传入品类的_id，以及运营商的operatorId,
    */
   async updateCategory_O(data) {
     // 查询要更新的品类
-    const Category = await this.ctx.model.Category;
+    const Category = this.ctx.model.Category;
+    const Operator = this.ctx.model.Operator;
     const updateInstance = await Category.findById(this.ctx.query._id);
-
+    console.log('query什么样：' + JSON.stringify(this.ctx.query.operatorId));
     const Adjust = this.ctx.model.Adjust;
+    const operatorId = await this.ctx.query.operatorId; // 运营商id
     const updatedData = await this.ctx.request.body;
     // console.log(updateInstance);
     // 判断品类是否上架，然后做出相应操作，0为未上架
@@ -77,6 +80,7 @@ class CategoryService extends Service {
       // 品类上架的状况
       try {
         const categoryAdjust = await Adjust.create({
+          operatorId,
           object: 'c',
           objectId: this.ctx.query._id,
           action: '1', // 表明 是 修改申请
@@ -85,10 +89,28 @@ class CategoryService extends Service {
           changedData: updatedData,
         });
 
+        // 给平台发送通知
+        const News = this.ctx.model.Verify.News;
+        const operator = await Operator.findById(this.ctx.query.operatorId);
+        const staffId = await this.ctx.service.tools.getObjectId('5eba30ab27ce693be86fb3ce'); // 注意这是写死的
+        const news = await News.create({
+          receiveId: staffId, // 消息接受对象的id
+          senderId: operatorId,
+          auditorName: operator.operatorName, // 发送消息者姓名
+          object: 'o', // 发送对象标识 o:运营商，p:平台，z:专才，y:用户
+          action: 't', // 动作标识 处理动作标识 t:提交审核，q:确认审核，p:派单，j:接单
+          detailObject: 'c', // 具体处理对象标识 c:品类	t:任务  o:运营商	z:专才 I:单品	log:工作日志  p:分区	g:工单
+          detailObjectId: updateInstance._id, // 具体处理对象id
+          result: '0', // 处理结果 0 – 未处理 / 1 – 成功 / 2 – 不成功
+          timestamp: Date.now(),
+          verifiedData: categoryAdjust, // 存放相关中间表数据
+        });
+
         return {
           status: '1',
           information: '提交修改申请成功',
           categoryAdjust,
+          news,
         };
       } catch (err) {
         console.log('err信息：' + err);
