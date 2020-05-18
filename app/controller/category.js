@@ -42,7 +42,7 @@ class categoryController extends Controller {
     try {
       const result = await this.ctx.service.category.queryCategory(req);
       this.ctx.body = {
-        status: '0',
+        status: '1',
         information: '查询成功',
         res: result,
       };
