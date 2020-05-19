@@ -148,7 +148,7 @@ class WorkorderService extends Service {
    */
   async assignGet() {
     try {
-      const Servicer = this.ctx.model.Servicer;
+      const Servicer = this.ctx.model.Servicer.Servicer;
       const Workorder = this.ctx.model.Workorder.Workorder;
       const Assign = this.ctx.model.Workorder.Assign;
 
