@@ -8,7 +8,7 @@ class Servicer extends Service {
 
   // 查看专才
   async queryServicer() {
-    const Servicer = this.ctx.model.Servicer;
+    const Servicer = this.ctx.model.Servicer.Servicer;
     const query = await this.ctx.query;
     try {
       const findResult = await Servicer.find(query);
@@ -96,6 +96,9 @@ class Servicer extends Service {
       };
     }
   }
+
+  // 审核专才申请
+
 
 }
 module.exports = Servicer;
