@@ -131,7 +131,8 @@ class Servicer extends Service {
     try {
       if (applyData.state === '1') {
         // 审核通过，执行专才申请的操作
-        const updateResult = await Servicer.updateOne({ _id: applyData.servicerId }, { $push: { servicerItem: applyData.itemId } });
+        const updateResult = await Servicer.updateOne({ _id: applyData.servicerId }, { $push: { servicerItem: applyData.itemId },
+          reason: applyData.reason });
 
         if (updateResult.nModified !== 0) {
           // 操作成功，改变申请表状态
