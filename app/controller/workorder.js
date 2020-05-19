@@ -78,7 +78,7 @@ class workorderController extends Controller {
   }
 
 
-  // 查询工单记录
+  // 查询工单日志
   async checkWorkorder() {
     const result = await this.ctx.service.workorder.checkWorkorder();
     this.ctx.body = result;

@@ -295,11 +295,11 @@ class WorkorderService extends Service {
 
   // 查看工单反馈记录
   async checkWorkorder() {
-    const query = await this.ctx.query.query;
+    const query = await this.ctx.query;
     const WorkorderLog = await this.ctx.model.Workorder.Workorderlog;
     try {
       const workorderLogs = await WorkorderLog.find({ query });
-      if (workorderLogs) {
+      if (workorderLogs.length !== 0) {
         return {
           information: '查询工单反馈成功',
           status: '1',
