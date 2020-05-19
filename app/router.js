@@ -84,6 +84,8 @@ module.exports = app => {
   router.post('/manager/verifyServiceApply_post/', controller.verify.verifySericeApply); // 审核 专才申请
   router.post('/manager/addcontract', controller.servicer.addContract); // 添加合约表
   router.get('/manager/querycontract', controller.servicer.queryContract); // 查看合约表
+  router.get('/manager/queryapply', controller.servicer.queryServicerApply); // 查看专才申请
+  router.post('/manager/verifyservicer', controller.servicer.verifyApply); // 处理专才申请
 
   /**
    * 消息管理
