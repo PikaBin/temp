@@ -296,9 +296,10 @@ class WorkorderService extends Service {
   // 查看工单反馈记录
   async checkWorkorder() {
     const query = await this.ctx.query;
-    const WorkorderLog = await this.ctx.model.Workorder.Workorderlog;
+    const WorkorderLog = this.ctx.model.Workorder.Workorderlog;
     try {
-      const workorderLogs = await WorkorderLog.find({ query });
+      const workorderLogs = await WorkorderLog.find(query);
+      // console.log('工单日志是：' + workorderLogs);
       if (workorderLogs.length !== 0) {
         return {
           information: '查询工单反馈成功',
