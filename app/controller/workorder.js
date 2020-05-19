@@ -76,5 +76,12 @@ class workorderController extends Controller {
     const result = await this.ctx.service.workorder.isRefuse();
     this.ctx.body = result;
   }
+
+
+  // 查询工单记录
+  async checkWorkorder() {
+    const result = await this.ctx.service.workorder.checkWorkorder();
+    this.ctx.body = result;
+  }
 }
 module.exports = workorderController;

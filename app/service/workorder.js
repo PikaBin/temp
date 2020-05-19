@@ -296,7 +296,7 @@ class WorkorderService extends Service {
   // 查看工单反馈记录
   async checkWorkorder() {
     const query = await this.ctx.query.query;
-    const WorkorderLog = await this.ctx.model.Workorderlog;
+    const WorkorderLog = await this.ctx.model.Workorder.Workorderlog;
     try {
       const workorderLogs = await WorkorderLog.find({ query });
       if (workorderLogs) {

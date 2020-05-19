@@ -74,6 +74,7 @@ module.exports = app => {
   router.post('/manager/addworkorderlog/', controller.workorder.workorderlog_man); // 手动增加工单日志
   router.post('/manager/assign', controller.workorder.assign_man); // 手动增加派单
   router.post('/manager/refuse', controller.workorder.refuse); // 拒单处理 测试
+  router.get('/manager/checklog', controller.workorder.checkWorkorder); // 查看工单反馈
 
   // 查询
   router.get('/manager/queryworkorder', controller.workorder.queryworkorder); // 查询工单
