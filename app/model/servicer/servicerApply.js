@@ -7,6 +7,7 @@ module.exports = app => {
   const servicerApplySchema = new Schema({
     servicerId: { type: String, required: true }, // 专才ID
     itemId: { type: Schema.Types.ObjectId, ref: 'Item', required: true }, // 单品ID
+    operatorId: { type: Schema.Types.ObjectId, required: false, default: new mongoose.Types.ObjectId('5ead80ee74243c4bc453abfd') }, // 运营商id5ead80ee74243c4bc453abfd
     itemName: { type: String, required: false }, // 项目名称
     certificates: { type: Array, required: false }, // 技能证书 是照片
     skillDescribe: { type: String, required: true }, // 能力描述
