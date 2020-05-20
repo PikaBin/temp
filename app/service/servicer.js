@@ -40,7 +40,7 @@ class Servicer extends Service {
   // 通用的查询方法
   async query(model, query) {
     try {
-      const findResult = await model.find(query);
+      const findResult = await model.find(query).sort({ timestamp: -1 });
 
       if (findResult.length !== 0) {
         return {
