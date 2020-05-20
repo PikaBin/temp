@@ -6,9 +6,12 @@
 const Service = require('egg').Service;
 class Servicer extends Service {
 
+
   /**
-   * 向专才发送消息
-   *
+   * 运营商发送消息向专才
+   * @param {ObjectId} operatorId 发消息的运营商
+   * @param {ObjectId} servicerApplyId 专才申请表记录id
+   * @param {ObjectId} servicerId 接受消息的专才id
    */
   async sendServicer(operatorId, servicerApplyId, servicerId) {
     const Operator = this.ctx.model.Operator;

@@ -12,6 +12,52 @@ const { Service } = require('egg');
 
 class OperatorInfo extends Service {
 
+  // 运营商提交申请
+  async submitAdjust(operatorId, object, objectId, changedData) {
+    const Adjust = this.ctx.model.Adjust;
+    let adjustInstance = {};
+    try {
+      adjustInstance = await Adjust.create({
+        operatorId,
+        object,
+        objectId,
+        action: '1', // 表明 是 修改申请
+        verifyTime: null, // 审核时间
+        timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
+        changedData,
+      });
+      return adjustInstance;
+    } catch (err) {
+      console.log('submit', err);
+      return null; // 如果失败传回空值
+    }
+  }
+
+  // 运营商发送消息 给平台
+  async sendNews(operatorId, objectId, adjust) {
+    const Operator = this.ctx.model.Operator;
+    const News = this.ctx.model.Verify.News;
+    const operator = await Operator.findById(operatorId);
+    const staffId = await this.ctx.service.tools.getObjectId('5eba30ab27ce693be86fb3ce'); // 注意这是写死的
+    const news = await News.create({
+      receiveId: staffId, // 消息接受对象的id
+      senderId: operatorId,
+      auditorName: operator.operatorName, // 发送消息者姓名
+      object: 'o', // 发送对象标识 o:运营商，p:平台，z:专才，y:用户
+      action: 't', // 动作标识 处理动作标识 t:提交审核，q:确认审核，p:派单，j:接单
+      detailObject: 'c', // 具体处理对象标识 c:品类	t:任务  o:运营商	z:专才 I:单品	log:工作日志  p:分区	g:工单
+      detailObjectId: objectId, // 具体处理对象id
+      result: '0', // 处理结果 0 – 未处理 / 1 – 成功 / 2 – 不成功
+      timestamp: Date.now(),
+      verifiedData: adjust, // 存放相关中间表数据
+    });
+
+    if (news) {
+      return news;
+    }
+    return null;
+  }
+
   /** 新增运营商  */
   async addOperator() {
     const Operator = await this.ctx.model.Operator;
@@ -30,16 +76,40 @@ class OperatorInfo extends Service {
 
   }
   /**
-   * 更新前端数据应该分为两步，第一步展示原有的信息表单，前端进行修改完成，提交，第二步，后端更新数据库信息，重新定位到运营商信息页面
-   * @param  {Object} data 参数 为要修改的 Json格式的数据
+   * 更新运营商信息，提交申请，发送通知
+   * 前端传入运营商id与修改后的数据
    */
-  async updateOperator(data) {
-    const Operator = await this.ctx.model.Operator;
-    // eslint-disable-next-line no-unused-vars
-    const temp = await Operator.findByIdAndUpdate(this.ctx.query._id, data); // 此处返回的记录为修改前的记录值
-    const updatedData = Operator.findById(this.ctx.query._id);
-    // console.log('"更新"后的数据' + JSON.stringify(data));
-    return updatedData;
+  async updateOperator() {
+    // const Operator = this.ctx.model.Operator;
+    const operatorId = await this.ctx.query.operatorId;
+    const data = await this.ctx.request.body;
+
+    // 提交申请
+    const object = 'o';
+    const adjustInstance = await this.submitAdjust(operatorId, object, operatorId, data);
+
+    // 如果提交申请成功，则发送通知
+
+    if (adjustInstance) {
+      const news = await this.sendNews(operatorId, operatorId, adjustInstance);
+
+      // 如果发送通知成功
+      if (news) {
+        return {
+          information: '提交申请成功',
+          status: '1',
+          news,
+          adjustInstance,
+        };
+      }
+    }
+
+    // 提交审核失败
+    return {
+      information: '提交申请失败',
+      status: '0',
+    };
+
 
   }
   /**
