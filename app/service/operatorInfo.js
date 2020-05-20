@@ -45,7 +45,7 @@ class OperatorInfo extends Service {
       auditorName: operator.operatorName, // 发送消息者姓名
       object: 'o', // 发送对象标识 o:运营商，p:平台，z:专才，y:用户
       action: 't', // 动作标识 处理动作标识 t:提交审核，q:确认审核，p:派单，j:接单
-      detailObject: 'c', // 具体处理对象标识 c:品类	t:任务  o:运营商	z:专才 I:单品	log:工作日志  p:分区	g:工单
+      detailObject: 'o', // 具体处理对象标识 c:品类	t:任务  o:运营商	z:专才 I:单品	log:工作日志  p:分区	g:工单
       detailObjectId: objectId, // 具体处理对象id
       result: '0', // 处理结果 0 – 未处理 / 1 – 成功 / 2 – 不成功
       timestamp: Date.now(),
