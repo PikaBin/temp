@@ -17,6 +17,7 @@ module.exports = app => {
     itemReviseTime: { type: Date },
     itemDeleteTime: { type: Date },
     itemVerifyTime: Date,
+    imgList: Array,
     operatorID: { type: Schema.Types.ObjectId, ref: 'Operator', required: true },
   });
 
