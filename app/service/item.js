@@ -104,16 +104,19 @@ class ItemService extends Service {
   async addItem() {
     const Item = await this.ctx.model.Item.Item;
     try {
-      const itemInstance = new Item(this.ctx.request.body);
-      await itemInstance.save();
+      // 拼接新增单品的全部数据
+      const fields = await this.ctx.service.uploadMore.uploadMore();
+      const data = fields.fields;
+      console.log('数据是什么：', data);
+      data.itemImages = fields.files;
+      const addResult = await Item.create(data);
 
       // 检测是否真正插入数据
-      const ensure = await Item.findById(itemInstance._id);
-      if (ensure) {
+      if (addResult) {
         return {
           information: '新增成功',
           status: '0',
-          ensure,
+          addResult,
         };
       }
       return {
@@ -671,8 +674,9 @@ class ItemService extends Service {
      */
   async deleteItem() {
     const Item = this.ctx.model.Item.Item;
-    const Partition = this.ctx.model.Item.Partition;
-    const DeleteItem = this.ctx.model.Item.Deleteitem;
+    // const Partition = this.ctx.model.Item.Partition;
+    // const DeleteItem = this.ctx.model.Item.Deleteitem;
+    const Category = this.ctx.model.Category;
     const deleteInstance = await Item.findById(this.ctx.query._id);
     const CategoryDelete = this.ctx.model.Deletecategory;
     const deleteData = await this.ctx.request.body;
