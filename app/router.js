@@ -37,6 +37,7 @@ module.exports = app => {
    */
 
   // 新增
+  router.get('/manager/getdata', controller.item.getData); // 获取新增的字段
   router.post('/manager/additem/', controller.item.addItem); // 新增单品
   router.post('/manager/addInterrupt', controller.item.addInterrupt); // 新增任务中断要求
   router.post('/manager/addpartition', controller.item.addPartition); // 新增单品分区

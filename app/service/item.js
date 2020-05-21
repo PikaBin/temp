@@ -105,10 +105,11 @@ class ItemService extends Service {
     const Item = await this.ctx.model.Item.Item;
     try {
       // 拼接新增单品的全部数据
-      const fields = await this.ctx.service.uploadMore.uploadMore();
-      const data = fields.fields;
-      console.log('数据是什么：', data);
-      data.itemImages = fields.files;
+      // const fields = await this.ctx.service.uploadMore.uploadMore();
+      // const data = fields.fields;
+      // console.log('数据是什么：', data);
+      // data.itemImages = fields.files;
+      const data = await this.ctx.request.body;
       const addResult = await Item.create(data);
 
       // 检测是否真正插入数据

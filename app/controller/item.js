@@ -10,6 +10,12 @@ const pump = require('mz-modules/pump');
 
 class itemController extends Controller {
 
+  // 获取新增单品的数据
+  async getData() {
+    const result = await this.ctx.service.uploadMore.uploadMore();
+    this.ctx.body = result;
+  }
+
   // 新增单品
   async addItem() {
     try {

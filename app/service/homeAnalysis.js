@@ -8,7 +8,7 @@ const { Service } = require('egg');
 class HomeAnalysis extends Service {
 
   async salesVolume() {
-    const Order = this.ctx.model.Order;
+    // const Order = this.ctx.model.Order;
   }
 }
 
