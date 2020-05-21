@@ -41,7 +41,7 @@ class NewsService extends Service {
   async getNews() {
     const News = this.ctx.model.Verify.News;
     const query = this.ctx.query;
-    console.log(query);
+    // console.log(query);
     try {
       const findresult = await News.find(query).sort({ timestamp: -1 });
 
