@@ -770,7 +770,6 @@ class ItemService extends Service {
   /**
    * 上架单品
    */
-  // 上下架品类,前端传来上/下 架的数据，query中传来_id
   async changeState() {
     // 获取前端的id和数据
     const ItemId = await this.ctx.query._id;

@@ -140,6 +140,7 @@ class OperatorInfoController extends Controller {
     };
 
   }
+
 }
 
 module.exports = OperatorInfoController;
