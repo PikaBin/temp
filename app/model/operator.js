@@ -25,9 +25,10 @@ module.exports = app => {
     legalPersonEmail: { type: String },
     legalPersonPhoto: { type: String },
     legalPersonAdress: { type: String },
-    operatorExamineTF: { type: String },
+    examineTF: { type: String },
     operatorReason: { type: String },
     operatorState: { type: String },
+    verifyTime: { type: Date }, // 审核时间 新增
   });
 
   operatorSchema
