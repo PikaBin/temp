@@ -43,6 +43,7 @@ module.exports = app => {
   router.post('/manager/addpartition', controller.item.addPartition); // 新增单品分区
   router.post('/manager/addtask', controller.item.addTask); // 新增任务
   router.post('/manager/additemImage', controller.item.getPhoto); // 上传单品图片，测试
+  router.post('/manager/changestate', controller.item.uporOff); // 单品上下架
 
   // 查询
   router.get('/manager/queryitem', controller.item.queryItem); // 单品查询，根据运营商id

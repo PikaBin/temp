@@ -26,7 +26,12 @@ class itemController extends Controller {
       console.log('itemController error：' + err);
     }
 
+  }
 
+  // 上下架单品
+  async uporOff() {
+    const result = await this.ctx.service.item.changeState();
+    this.ctx.body = result;
   }
 
   // 新增任务中断要求表

@@ -17,6 +17,36 @@ const { Service } = require('egg');
 class ItemService extends Service {
 
   /**
+   * 发消息
+   * @param {ObjectId} operatorId 运营商id
+   * @param {ObjectId} objectId 申请审核的对象id
+   * @param {ObjectId} adjust 申请记录
+   */
+  async sendNews(operatorId, objectId, adjust) {
+    const Operator = this.ctx.model.Operator;
+    const News = this.ctx.model.Verify.News;
+    const operator = await Operator.findById(operatorId);
+    const staffId = await this.ctx.service.tools.getObjectId('5ec7894745e65336184fd8ea'); // 注意这是写死的
+    const news = await News.create({
+      receiveId: staffId, // 消息接受对象的id
+      senderId: operatorId,
+      auditorName: operator.operatorName, // 发送消息者姓名
+      object: 'o', // 发送对象标识 o:运营商，p:平台，z:专才，y:用户
+      action: 't', // 动作标识 处理动作标识 t:提交审核，q:确认审核，p:派单，j:接单
+      detailObject: 'I', // 具体处理对象标识 c:品类	t:任务  o:运营商	z:专才 I:单品	log:工作日志  p:分区	g:工单
+      detailObjectId: objectId, // 具体处理对象id
+      result: '0', // 处理结果 0 – 未处理 / 1 – 成功 / 2 – 不成功
+      timestamp: Date.now(),
+      verifiedData: adjust, // 存放相关中间表数据
+    });
+
+    if (news) {
+      return news;
+    }
+    return null;
+  }
+
+  /**
  * 单品查询
  * 前端传入运营商id
  * 按加入时间降序
@@ -740,6 +770,55 @@ class ItemService extends Service {
   /**
    * 上架单品
    */
+  // 上下架品类,前端传来上/下 架的数据，query中传来_id
+  async changeState() {
+    // 获取前端的id和数据
+    const ItemId = await this.ctx.query._id;
+    const operatorId = await this.ctx.query.operatorId;
+    const Item = this.ctx.model.Item.Item;
+    const Adjust = this.ctx.model.Adjust;
+    const data = await Item.findById(ItemId);
+    const changedData = await this.ctx.request.body; // 获取前端上下架时传下来的数据
+
+    // 上/下架，新增记录，返回
+    try {
+      let upOroff = '0';
+      if (data.itemState === '0') {
+        upOroff = '3';
+      } else {
+        upOroff = '4';
+      }
+
+      const upInstance = await Adjust.create({
+        object: 'c',
+        operatorId,
+        objectId: this.ctx.query._id,
+        action: upOroff,
+        verifyTime: null, // 审核时间
+        timestamp: Date.now(), // 时间戳 因为model表中默认时间戳的值不会更新，所以在这里改变
+        changedData,
+      });
+
+      if (upInstance) {
+        const news = await this.sendNews(operatorId, ItemId, upInstance);
+
+        return {
+          information: '提交请求成功',
+          status: '1',
+          upInstance,
+          news,
+        };
+      }
+
+
+    } catch (err) {
+      return {
+        information: '提交请求失败',
+        status: '0',
+        error: err.message,
+      };
+    }
+  }
 
 
 }
