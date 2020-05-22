@@ -69,13 +69,13 @@ module.exports = appInfo => {
   };
 
   // 配置服务启动的端口
-  // config.cluster = {
-  //   listen: {
-  //     path: '',
-  //     port: 7003,
-  //     hostname: '127.0.0.1',
-  //   },
-  // };
+  config.cluster = {
+    listen: {
+      path: '',
+      port: 7002,
+      hostname: '127.0.0.1',
+    },
+  };
 
   return {
     ...config,
