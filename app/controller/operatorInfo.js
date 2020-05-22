@@ -32,11 +32,6 @@ class OperatorInfoController extends Controller {
   /**
    * 更新运营商基础信息并返回更新后的信息
    */
-  // async updateOperator_get() {
-  //   this.ctx.body = {
-  //     _csrf: this.ctx.csrf,
-  //   };
-  // }
   async updateOperator() {
     // 获取前端数据
     const req = await this.ctx.request.body;
@@ -94,11 +89,45 @@ class OperatorInfoController extends Controller {
     await pump(stream, writeStream);
 
     // 将图片存储路径加入到相应运营商记录中
-    // const id = this.ctx.query.id; // 暂时从前端通过query方式 传入用户id
-    // const Operator = this.ctx.model.Operator;
-    // console.log(dir.saveDir);
+
     try {
       const result = await this.ctx.service.operatorInfo.updateOperator({ legalPersonPhoto: dir.saveDir });
+      console.log('result:' + JSON.stringify(result));
+    } catch (err) {
+      console.log('operatorInfo错误：' + err);
+    }
+
+
+    this.ctx.body = {
+      url: dir.saveDir,
+      fields: stream.fields,
+    };
+
+  }
+
+  /**
+   * 上传营业执照
+   */
+  async getlicense() {
+    // 获取表单提交的文件流
+    const stream = await this.ctx.getFileStream();
+    // 获取上传的文件名
+    const filename = path.basename(stream.filename);
+    // console.log(filename);nian.jpg
+
+    // 拼接图片上传的目录
+    const dir = await this.service.fileupload.makeUploadPath(filename);
+
+    // 创建一个写入流
+    const target = dir.uploadDir;
+    console.log('target是' + target);
+    const writeStream = fs.createWriteStream(target);
+    await pump(stream, writeStream);
+
+    // 将图片存储路径加入到相应运营商记录中
+
+    try {
+      const result = await this.ctx.service.operatorInfo.updateOperator({ license: dir.saveDir });
       console.log('result:' + JSON.stringify(result));
     } catch (err) {
       console.log('operatorInfo错误：' + err);

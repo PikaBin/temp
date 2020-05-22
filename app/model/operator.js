@@ -29,6 +29,7 @@ module.exports = app => {
     operatorReason: { type: String },
     operatorState: { type: String },
     verifyTime: { type: Date }, // 审核时间 新增
+    license: String, // 运营商营业执照
   });
 
   operatorSchema

@@ -790,7 +790,7 @@ class ItemService extends Service {
       }
 
       const upInstance = await Adjust.create({
-        object: 'c',
+        object: 'I',
         operatorId,
         objectId: this.ctx.query._id,
         action: upOroff,
