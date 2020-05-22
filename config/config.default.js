@@ -63,11 +63,9 @@ module.exports = appInfo => {
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
   };
 
-  // 允许多个字段在一个表单里同时提交
   exports.multipart = {
-    fields: '10000',
-  };
-
+    fields:'10000'
+ };
 
   return {
     ...config,
