@@ -63,9 +63,19 @@ module.exports = appInfo => {
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
   };
 
+  // 配置表单多字段提交
   exports.multipart = {
-    fields:'10000'
- };
+    fields: '10000',
+  };
+
+  // 配置服务启动的端口
+  // config.cluster = {
+  //   listen: {
+  //     path: '',
+  //     port: 7003,
+  //     hostname: '127.0.0.1',
+  //   },
+  // };
 
   return {
     ...config,

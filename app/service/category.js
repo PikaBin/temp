@@ -22,7 +22,7 @@ class CategoryService extends Service {
     const Operator = this.ctx.model.Operator;
     const News = this.ctx.model.Verify.News;
     const operator = await Operator.findById(operatorId);
-    const staffId = await this.ctx.service.tools.getObjectId('5eba30ab27ce693be86fb3ce'); // 注意这是写死的
+    const staffId = await this.ctx.service.tools.getObjectId('5ec7894745e65336184fd8ea'); // 注意这是写死的
     const news = await News.create({
       receiveId: staffId, // 消息接受对象的id
       senderId: operatorId,
