@@ -29,6 +29,7 @@ class WorkorderService extends Service {
       result: '0', // 处理结果 0 – 未处理 / 1 – 成功 / 2 – 不成功
       timestamp: Date.now(),
       content: '系统已经派送一份工单，请注意查收',
+      addTime: new Date(), // 消息增加时间
     });
 
     if (news) {
