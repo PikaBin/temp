@@ -18,6 +18,7 @@ class Servicer extends Service {
     const News = this.ctx.model.Verify.News;
     const operator = await Operator.findById(operatorId);
     const ServicerId = await this.ctx.service.tools.getObjectId(servicerId);
+    const applyData = await this.ctx.request.body;
     const news = await News.create({
       receiveId: ServicerId, // 消息接受方的id
       senderId: operatorId,
@@ -26,9 +27,10 @@ class Servicer extends Service {
       action: 'q', // 动作标识 处理动作标识 t:提交审核，q:确认审核，p:派单，j:接单
       detailObject: 'I', // 具体处理对象标识 c:品类	t:任务  o:运营商	z:专才 I:单品	log:工作日志  p:分区	g:工单
       detailObjectId: servicerApplyId, // 具体处理对象id
-      result: '0', // 处理结果 0 – 未处理 / 1 – 成功 / 2 – 不成功
+      result: applyData.state, // 处理结果 0 – 未处理 / 1 – 成功 / 2 – 不成功
       timestamp: Date.now(),
       content: '系统已经审核您的申请，请注意查收',
+      addTime: new Date(),
     });
 
     if (news) {
