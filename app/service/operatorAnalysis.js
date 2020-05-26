@@ -278,10 +278,75 @@ class Analysis extends Service {
       }
     }
 
-
     return {
       target,
     };
+  }
+
+  // 实收账款
+  async totalCash() {
+    const Cashflow = this.ctx.model.Cashflow;
+    const operatorId = await this.ctx.query.operatorId;
+    const operatorId_o = await this.ctx.service.tools.getObjectId(operatorId);
+
+    const cash = await Cashflow.aggregate([
+      {
+        $match: { operatorId: operatorId_o },
+      },
+      {
+        $group: {
+          _id: null,
+          totalCash: { $sum: "$operatorReceivable" },
+        },
+      },
+    ]);
+
+    return cash;
+  }
+
+  // 实收账款本月数据
+  async cashOnMonth() {
+    const Cashflow = this.ctx.model.Cashflow;
+    const operatorId = await this.ctx.query.operatorId;
+    const operatorId_o = await this.ctx.service.tools.getObjectId(operatorId);
+
+    const cash = await Cashflow.aggregate([
+      {
+        $match: { operatorId: operatorId_o },
+      },
+      {
+        $group: {
+          _id: { dayOfMonth: { $dayOfMonth: "$addTime" } },
+          totalCash: { $sum: "$operatorReceivable" },
+        },
+      },
+    ]);
+    return cash;
+
+  }
+
+  // 实收账款本年数据
+  async cashOnYear() {
+    const Cashflow = this.ctx.model.Cashflow;
+    const operatorId = await this.ctx.query.operatorId;
+    const operatorId_o = await this.ctx.service.tools.getObjectId(operatorId);
+
+    const cash = await Cashflow.aggregate([
+      {
+        $match: { operatorId: operatorId_o },
+      },
+      {
+        $group: {
+          _id: { month: { $month: "$addTime" } },
+          totalCash: { $sum: "$operatorReceivable" },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+    return cash;
+
   }
 }
 

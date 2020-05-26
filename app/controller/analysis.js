@@ -42,6 +42,24 @@ class AnalysisController extends Controller {
     const result = await this.ctx.service.operatorAnalysis.countOnYear();
     this.ctx.body = result;
   }
+
+  // 实收账款
+  async totalCash() {
+    const result = await this.ctx.service.operatorAnalysis.totalCash();
+    this.ctx.body = result;
+  }
+
+  // 本月实收账款
+  async cashOnMonth() {
+    const result = await this.ctx.service.operatorAnalysis.cashOnMonth();
+    this.ctx.body = result;
+  }
+
+  // 本年实收账款
+  async cashOnYear() {
+    const result = await this.ctx.service.operatorAnalysis.cashOnYear();
+    this.ctx.body = result;
+  }
 }
 
 module.exports = AnalysisController;
