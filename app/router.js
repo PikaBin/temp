@@ -125,4 +125,7 @@ module.exports = app => {
   router.get('/manager/totaldebt', controller.analysis.totaldebt); // 应付总额
   router.get('/manager/debtonmonth', controller.analysis.debtOnMonth); // 月应付
   router.get('/manager/debtonYear', controller.analysis.debtOnYear); // 年应付
+
+  // 专才排行榜
+  router.get('/manager/servicerRank', controller.analysis.servicerank); // 专才排行榜
 };

@@ -84,6 +84,12 @@ class AnalysisController extends Controller {
     const result = await this.ctx.service.operatorAnalysis.debtOnYear();
     this.ctx.body = result;
   }
+
+  // 专才排行榜
+  async servicerank() {
+    const result = await this.ctx.service.operatorAnalysis.servicerRank();
+    this.ctx.body = result;
+  }
 }
 
 module.exports = AnalysisController;

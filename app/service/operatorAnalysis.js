@@ -478,6 +478,29 @@ class Analysis extends Service {
     return debt;
   }
 
+  // 专才排行榜
+  async servicerRank() {
+    const Cashflow = this.ctx.model.Cashflow;
+    const operatorId = await this.ctx.query.operatorId;
+    const operatorId_o = await this.ctx.service.tools.getObjectId(operatorId);
+
+    const servicerank = await Cashflow.aggregate([
+      {
+        $match: { operatorId: operatorId_o },
+      },
+      {
+        $group: {
+          _id: { servicer: "$servicerId" },
+          sale: { $sum: "$serverReceivable" },
+        },
+      },
+      {
+        $sort: { sale: -1 },
+      },
+    ]);
+
+    return servicerank;
+  }
 }
 
 module.exports = Analysis;
