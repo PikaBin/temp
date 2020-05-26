@@ -24,6 +24,24 @@ class AnalysisController extends Controller {
     const result = await this.ctx.service.operatorAnalysis.operatorOnYear();
     this.ctx.body = result;
   }
+
+  // 成交总量
+  async totalcount() {
+    const result = await this.ctx.service.operatorAnalysis.totalCount();
+    this.ctx.body = result;
+  }
+
+  // 成交量月数据
+  async countOnMonth() {
+    const result = await this.ctx.service.operatorAnalysis.countOnMonth();
+    this.ctx.body = result;
+  }
+
+  // 成交量年数据
+  async countOnYear() {
+    const result = await this.ctx.service.operatorAnalysis.countOnYear();
+    this.ctx.body = result;
+  }
 }
 
 module.exports = AnalysisController;

@@ -166,6 +166,123 @@ class Analysis extends Service {
     return target;
   }
 
+  // 成交量总额
+  async totalCount() {
+    const operatorId = await this.ctx.query.operatorId;
+    const Order = this.ctx.model.Order;
+    const sale = await Order.aggregate([
+      {
+        $lookup: {
+          from: 'workorders',
+          localField: '_id',
+          foreignField: 'orderID',
+          as: 'workorder',
+        },
+      },
+      {
+        $group: {
+          _id: { operator: "$workorder.operatorID" },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    let target; // 目标数据
+    for (let i = 0; i < sale.length; i++) {
+      const operatorID = sale[i]._id.operator[0];
+      // console.log('数据中的：', operatorID);
+      if (operatorID == operatorId) {
+        target = sale[i].count;
+      }
+    }
+    return target;
+  }
+
+  // 成交量本月数量
+  async countOnMonth() {
+    const operatorId = await this.ctx.query.operatorId;
+    const Order = this.ctx.model.Order;
+    const sale = await Order.aggregate([
+      {
+        $lookup: {
+          from: 'workorders',
+          localField: '_id',
+          foreignField: 'orderID',
+          as: 'workorder',
+        },
+      },
+      {
+        $group: {
+          _id: { day: { $dayOfMonth: "$orderTime" }, operator: "$workorder.operatorID" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: -1 },
+      },
+    ]);
+
+    const target = []; // 目标数据
+    // console.log(sale.length);
+    for (let i = 0; i < sale.length; i++) {
+      const operatorID = sale[i]._id.operator[0];
+      if (operatorID == operatorId) {
+        target.push(sale[i]);
+      }
+    }
+
+    // 计算日比
+    const today = target[0].count;
+    const yesterday = target[1].count;
+
+    const ratio = (today - yesterday) / yesterday * 100;
+    // console.log(ratio);
+
+    return {
+      simpleRatio: ratio.toFixed(2),
+      todayCount: today,
+      target,
+    };
+  }
+
+  // 成交量本年数据
+  async countOnYear() {
+    const operatorId = await this.ctx.query.operatorId;
+    const Order = this.ctx.model.Order;
+    const sale = await Order.aggregate([
+      {
+        $lookup: {
+          from: 'workorders',
+          localField: '_id',
+          foreignField: 'orderID',
+          as: 'workorder',
+        },
+      },
+      {
+        $group: {
+          _id: { month: { $month: "$orderTime" }, operator: "$workorder.operatorID" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: -1 },
+      },
+    ]);
+
+    const target = []; // 目标数据
+    // console.log(sale.length);
+    for (let i = 0; i < sale.length; i++) {
+      const operatorID = sale[i]._id.operator[0];
+      if (operatorID == operatorId) {
+        target.push(sale[i]);
+      }
+    }
+
+
+    return {
+      target,
+    };
+  }
 }
 
 module.exports = Analysis;
