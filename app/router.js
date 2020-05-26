@@ -114,10 +114,13 @@ module.exports = app => {
   router.get('/manager/totalcount', controller.analysis.totalcount); // 总成交量
   router.get('/manager/countonday', controller.analysis.countOnDay); // 日成交量
   router.get('/manager/countonmonth', controller.analysis.countOnMonth); // 月成交量
-  router.get('/manager/countonyear', controller.analysis.operatorOnYear); // 年成交量
+  router.get('/manager/countonyear', controller.analysis.countOnYear); // 年成交量
 
   // 实收款
   router.get('/manager/totalcash', controller.analysis.totalCash); // 实收账款
   router.get('/manager/cashonmonth', controller.analysis.cashOnMonth); // 本月实收账款
   router.get('/manager/cashonyear', controller.analysis.cashOnYear); // 本年实收账款
+
+  // 实付款
+  router.get('/manager/totaldebt', controller.analysis.totaldebt); // 应付总额
 };

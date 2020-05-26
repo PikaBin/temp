@@ -352,11 +352,32 @@ class Analysis extends Service {
       {
         $group: {
           _id: { dayOfMonth: { $dayOfMonth: "$addTime" } },
-          totalCash: { $sum: "$operatorReceivable" },
+          cash: { $sum: "$operatorReceivable" },
         },
       },
     ]);
-    return cash;
+
+    const target = []; // 目标数据
+    console.log(cash);
+    for (let i = 0; i < cash.length; i++) {
+      const operatorID = cash[i]._id.operator[0];
+      if (operatorID == operatorId) {
+        target.push(cash[i]);
+      }
+    }
+
+    // 计算日比
+    const today = target[0].cash;
+    const yesterday = target[1].cash;
+
+    const ratio = (today - yesterday) / yesterday * 100;
+    // console.log(ratio);
+
+    return {
+      simpleRatio: ratio.toFixed(2),
+      todayCount: today,
+      target,
+    };
 
   }
 
@@ -386,6 +407,46 @@ class Analysis extends Service {
 
 
   // 应付账款总额
+  async totaldebt() {
+    const operatorId = await this.ctx.query.operatorId;
+    const operatorId_o = await this.ctx.service.tools.getObjectId(operatorId);
+    const Cashflow = this.ctx.model.Cashflow;
+    const debt = await Cashflow.aggregate([
+      {
+        $match: { operatorId: operatorId_o },
+      },
+      {
+        $group: {
+          _id: null,
+          debt: { $sum: "$serverReceivable" },
+        },
+      },
+    ]);
+    return debt;
+  }
+
+  // 月应付
+  async debtOnMonth() {
+    const Cashflow = this.ctx.model.Cashflow;
+    const operatorId = await this.ctx.query.operatorId;
+    const operatorId_o = await this.ctx.service.tools.getObjectId(operatorId);
+
+    const cash = await Cashflow.aggregate([
+      {
+        $match: { operatorId: operatorId_o },
+      },
+      {
+        $group: {
+          _id: { dayOfMonth: { $dayOfMonth: "$addTime" } },
+          totalCash: { $sum: "$serverReceivable" },
+        },
+      },
+    ]);
+    return cash;
+
+  }
+
+
 }
 
 module.exports = Analysis;
