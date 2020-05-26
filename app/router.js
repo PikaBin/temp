@@ -112,6 +112,7 @@ module.exports = app => {
 
   // 成交量
   router.get('/manager/totalcount', controller.analysis.totalcount); // 总成交量
+  router.get('/manager/countonday', controller.analysis.countOnDay); // 日成交量
   router.get('/manager/countonmonth', controller.analysis.countOnMonth); // 月成交量
   router.get('/manager/countonyear', controller.analysis.operatorOnYear); // 年成交量
 

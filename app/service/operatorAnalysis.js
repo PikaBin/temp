@@ -198,6 +198,41 @@ class Analysis extends Service {
     return target;
   }
 
+  // 成交量每日
+  async countOnDay() {
+    const operatorId = await this.ctx.query.operatorId;
+    const Order = this.ctx.model.Order;
+    const sale = await Order.aggregate([
+      {
+        $lookup: {
+          from: 'workorders',
+          localField: '_id',
+          foreignField: 'orderID',
+          as: 'workorder',
+        },
+      },
+      {
+        $group: {
+          _id: { dayOfYear: { $dayOfYear: "$orderTime" }, operator: "$workorder.operatorID" },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: -1 },
+      },
+    ]);
+
+    const target = []; // 目标数据
+    // console.log(sale.length);
+    for (let i = 0; i < sale.length; i++) {
+      const operatorID = sale[i]._id.operator[0];
+      if (operatorID == operatorId) {
+        target.push(sale[i]);
+      }
+    }
+
+    return target;
+  }
   // 成交量本月数量
   async countOnMonth() {
     const operatorId = await this.ctx.query.operatorId;
@@ -348,6 +383,9 @@ class Analysis extends Service {
     return cash;
 
   }
+
+
+  // 应付账款总额
 }
 
 module.exports = Analysis;

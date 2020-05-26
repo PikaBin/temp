@@ -31,6 +31,12 @@ class AnalysisController extends Controller {
     this.ctx.body = result;
   }
 
+  // 成交量日数据
+  async countOnDay() {
+    const result = await this.ctx.service.operatorAnalysis.countOnDay();
+    this.ctx.body = result;
+  }
+
   // 成交量月数据
   async countOnMonth() {
     const result = await this.ctx.service.operatorAnalysis.countOnMonth();
