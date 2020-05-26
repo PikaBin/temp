@@ -78,6 +78,12 @@ class AnalysisController extends Controller {
     const result = await this.ctx.service.operatorAnalysis.debtOnMonth();
     this.ctx.body = result;
   }
+
+  // 年应付
+  async debtOnYear() {
+    const result = await this.ctx.service.operatorAnalysis.debtOnYear();
+    this.ctx.body = result;
+  }
 }
 
 module.exports = AnalysisController;

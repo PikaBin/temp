@@ -124,4 +124,5 @@ module.exports = app => {
   // 实付款
   router.get('/manager/totaldebt', controller.analysis.totaldebt); // 应付总额
   router.get('/manager/debtonmonth', controller.analysis.debtOnMonth); // 月应付
+  router.get('/manager/debtonYear', controller.analysis.debtOnYear); // 年应付
 };

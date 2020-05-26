@@ -457,6 +457,26 @@ class Analysis extends Service {
 
   }
 
+  // 年应付
+  async debtOnYear() {
+    const Cashflow = this.ctx.model.Cashflow;
+    const operatorId = await this.ctx.query.operatorId;
+    const operatorId_o = await this.ctx.service.tools.getObjectId(operatorId);
+
+    const debt = await Cashflow.aggregate([
+      {
+        $match: { operatorId: operatorId_o },
+      },
+      {
+        $group: {
+          _id: { month: { $month: "$addTime" } },
+          debt: { $sum: "$serverReceivable" },
+        },
+      },
+    ]);
+
+    return debt;
+  }
 
 }
 
