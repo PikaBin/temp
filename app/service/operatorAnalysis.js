@@ -357,18 +357,18 @@ class Analysis extends Service {
       },
     ]);
 
-    const target = []; // 目标数据
-    console.log(cash);
-    for (let i = 0; i < cash.length; i++) {
-      const operatorID = cash[i]._id.operator[0];
-      if (operatorID == operatorId) {
-        target.push(cash[i]);
-      }
-    }
+    // const target = []; // 目标数据
+    // console.log(cash);
+    // for (let i = 0; i < cash.length; i++) {
+    //   const operatorID = cash[i]._id.operator[0];
+    //   if (operatorID == operatorId) {
+    //     target.push(cash[i]);
+    //   }
+    // }
 
     // 计算日比
-    const today = target[0].cash;
-    const yesterday = target[1].cash;
+    const today = cash[0].cash;
+    const yesterday = cash[1].cash;
 
     const ratio = (today - yesterday) / yesterday * 100;
     // console.log(ratio);
@@ -376,7 +376,7 @@ class Analysis extends Service {
     return {
       simpleRatio: ratio.toFixed(2),
       todayCount: today,
-      target,
+      cash,
     };
 
   }
@@ -431,18 +431,29 @@ class Analysis extends Service {
     const operatorId = await this.ctx.query.operatorId;
     const operatorId_o = await this.ctx.service.tools.getObjectId(operatorId);
 
-    const cash = await Cashflow.aggregate([
+    const debt = await Cashflow.aggregate([
       {
         $match: { operatorId: operatorId_o },
       },
       {
         $group: {
           _id: { dayOfMonth: { $dayOfMonth: "$addTime" } },
-          totalCash: { $sum: "$serverReceivable" },
+          debt: { $sum: "$serverReceivable" },
         },
       },
     ]);
-    return cash;
+
+    // 计算日比
+    const today = debt[0].debt;
+    const yesterday = debt[1].debt;
+
+    const ratio = (today - yesterday) / yesterday * 100;
+
+    return {
+      simpleRatio: ratio.toFixed(2),
+      todayDebt: today,
+      debt,
+    };
 
   }
 
