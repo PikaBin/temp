@@ -101,4 +101,11 @@ module.exports = app => {
    */
   router.get('/manager/queryservicer', controller.servicer.queryServicer); // 查询专才
 
+  /**
+   * 数据分析
+   */
+  router.get('/manager/operatorsale', controller.analysis.operatorSale); // 运营商总额
+  router.get('/manager/operatoronmonth', controller.analysis.operatorOnMonth); // 本月销售额
+  router.get('/manager/operatoronyear', controller.analysis.operatorOnYear); // 本年销售额
+
 };
