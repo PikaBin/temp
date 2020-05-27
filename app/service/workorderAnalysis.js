@@ -126,6 +126,44 @@ class workorderAnalysis extends Service {
     };
   }
 
+  // 意外中止 本年
+  async badworkorderOnYear() {
+    const Workorder = this.ctx.model.Workorder.Workorder;
+    const operatorId = await this.ctx.query.operatorId;
+    const operatorId_o = await this.ctx.service.tools.getObjectId(operatorId);
+    const number = await Workorder.aggregate([
+      {
+        $match: { operatorID: operatorId_o, state: '3' },
+      },
+      {
+        $group: {
+          _id: { month: { $month: "$startTime" } },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    return number;
+  }
+
+  // 顺利完成总数
+  async goodworkorder() {
+    const Workorder = this.ctx.model.Workorder.Workorder;
+    const operatorId = await this.ctx.query.operatorId;
+    const operatorId_o = await this.ctx.service.tools.getObjectId(operatorId);
+
+    const goodnumber = await Workorder.aggregate([
+      {
+        $match: { operatorID: operatorId_o, state: '0' },
+      },
+      {
+        $group: {
+          _id: null,
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    return goodnumber;
+  }
   // 顺利完成，每月
   async goodworkorderOnMonth() {
     const Workorder = this.ctx.model.Workorder.Workorder;
@@ -155,6 +193,24 @@ class workorderAnalysis extends Service {
     };
   }
 
+  // 顺利完成 每年
+  async goodworkorderOnYear() {
+    const Workorder = this.ctx.model.Workorder.Workorder;
+    const operatorId = await this.ctx.query.operatorId;
+    const operatorId_o = await this.ctx.service.tools.getObjectId(operatorId);
+    const number = await Workorder.aggregate([
+      {
+        $match: { operatorID: operatorId_o, state: '0' },
+      },
+      {
+        $group: {
+          _id: { month: { $month: "$startTime" } },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+    return number;
+  }
   // 单品排行榜
   async partitionRank() {
     const Workorder = this.ctx.model.Workorder.Workorder;

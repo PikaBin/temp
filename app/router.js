@@ -18,6 +18,7 @@ module.exports = app => {
   router.get('/manager/queryoperator', controller.operatorInfo.queryOperator);
   router.post('/manager/addimage', controller.operatorInfo.getPhoto); // 上传头像
   router.post('/manager/getlicense', controller.operatorInfo.getlicense); // 上传营业执照
+  router.post('/manager/changepsd', controller.operatorInfo.changePassword); // 修改密码
 
 
   // 品类标签
@@ -135,6 +136,9 @@ module.exports = app => {
   router.get('/manager/workorderonyear', controller.analysis.workorderOnYear); // 每年工单
   router.get('/manager/badworkorder', controller.analysis.badworkorder); // 意外中止的工单总数
   router.get('/manager/badworkorderonmonth', controller.analysis.badworkorderOnMonth); // 意外中止 本月
+  router.get('/manager/badworkorderonyear', controller.analysis.badworkorderOnYear); // 意外中止 本年
+  router.get('/manager/goodworkorder', controller.analysis.goodworkorder); // 顺利完成 总数
   router.get('/manager/goodworkorderonmonth', controller.analysis.goodworkorderOnMonth); // 顺利完成 本月
+  router.get('/manager/goodworkorderonyear', controller.analysis.goodworkorderOnYear); // 顺利完成 本月
   router.get('/manager/partitonRank', controller.analysis.partitionRank); // 单品排行榜
 };

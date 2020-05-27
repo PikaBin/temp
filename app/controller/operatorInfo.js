@@ -141,6 +141,11 @@ class OperatorInfoController extends Controller {
 
   }
 
+  // 修改密码
+  async changePassword() {
+    const result = await this.ctx.service.operatorInfo.changePassword();
+    this.ctx.body = result;
+  }
 }
 
 module.exports = OperatorInfoController;

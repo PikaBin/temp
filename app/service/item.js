@@ -189,6 +189,17 @@ class ItemService extends Service {
     }
   }
 
+  // 查询单品分区，根据单品id
+  async queryPartition() {
+    const Partition = this.ctx.model.Item.Partition;
+    const id = await this.ctx.query.partitionId;
+    const findResult = await Partition.findById(id);
+
+    if (findResult) {
+      return findResult;
+    }
+    return '查询结果为空';
+  }
   /**
    * 编辑单品分区
    */

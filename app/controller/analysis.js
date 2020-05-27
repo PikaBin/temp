@@ -121,12 +121,29 @@ class AnalysisController extends Controller {
     this.ctx.body = result;
   }
 
-  // 顺利完成
+  // 意外中止 每年
+  async badworkorderOnYear() {
+    const result = await this.ctx.service.workorderAnalysis.badworkorderOnYear();
+    this.ctx.body = result;
+  }
+
+  // 顺利完成 总数
+  async goodworkorder() {
+    const result = await this.ctx.service.workorderAnalysis.goodworkorder();
+    this.ctx.body = result;
+  }
+
+  // 顺利完成 每月
   async goodworkorderOnMonth() {
     const result = await this.ctx.service.workorderAnalysis.goodworkorderOnMonth();
     this.ctx.body = result;
   }
 
+  // 顺利完成 每年
+  async goodworkorderOnYear() {
+    const result = await this.ctx.service.workorderAnalysis.goodworkorderOnYear();
+    this.ctx.body = result;
+  }
   // 单品排行榜
   async partitionRank() {
     const result = await this.ctx.service.workorderAnalysis.partitionRank();
