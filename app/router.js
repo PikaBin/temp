@@ -128,4 +128,13 @@ module.exports = app => {
 
   // 专才排行榜
   router.get('/manager/servicerRank', controller.analysis.servicerank); // 专才排行榜
+
+  // 工单分析
+  router.get('/manager/totalworkorder', controller.analysis.totalworkorder); // 工单总数
+  router.get('/manager/workorderonmonth', controller.analysis.workorderOnMonth); // 每月工单
+  router.get('/manager/workorderonyear', controller.analysis.workorderOnYear); // 每年工单
+  router.get('/manager/badworkorder', controller.analysis.badworkorder); // 意外中止的工单总数
+  router.get('/manager/badworkorderonmonth', controller.analysis.badworkorderOnMonth); // 意外中止 本月
+  router.get('/manager/goodworkorderonmonth', controller.analysis.goodworkorderOnMonth); // 顺利完成 本月
+  router.get('/manager/partitonRank', controller.analysis.partitionRank); // 单品排行榜
 };

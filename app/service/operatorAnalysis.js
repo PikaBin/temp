@@ -357,14 +357,6 @@ class Analysis extends Service {
       },
     ]);
 
-    // const target = []; // 目标数据
-    // console.log(cash);
-    // for (let i = 0; i < cash.length; i++) {
-    //   const operatorID = cash[i]._id.operator[0];
-    //   if (operatorID == operatorId) {
-    //     target.push(cash[i]);
-    //   }
-    // }
 
     // 计算日比
     const today = cash[0].cash;

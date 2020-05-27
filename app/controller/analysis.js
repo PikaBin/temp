@@ -90,6 +90,48 @@ class AnalysisController extends Controller {
     const result = await this.ctx.service.operatorAnalysis.servicerRank();
     this.ctx.body = result;
   }
+
+  // 工单总量
+  async totalworkorder() {
+    const result = await this.ctx.service.workorderAnalysis.totalWorkorder();
+    this.ctx.body = result;
+  }
+
+  // 每月工单
+  async workorderOnMonth() {
+    const result = await this.ctx.service.workorderAnalysis.workorderOnMonth();
+    this.ctx.body = result;
+  }
+
+  // 本年工单
+  async workorderOnYear() {
+    const result = await this.ctx.service.workorderAnalysis.workorderOnYear();
+    this.ctx.body = result;
+  }
+
+  // 意外中止工单总数
+  async badworkorder() {
+    const result = await this.ctx.service.workorderAnalysis.badworkorder();
+    this.ctx.body = result;
+  }
+
+  // 意外中止 每月
+  async badworkorderOnMonth() {
+    const result = await this.ctx.service.workorderAnalysis.badworkorderOnMonth();
+    this.ctx.body = result;
+  }
+
+  // 顺利完成
+  async goodworkorderOnMonth() {
+    const result = await this.ctx.service.workorderAnalysis.goodworkorderOnMonth();
+    this.ctx.body = result;
+  }
+
+  // 单品排行榜
+  async partitionRank() {
+    const result = await this.ctx.service.workorderAnalysis.partitionRank();
+    this.ctx.body = result;
+  }
 }
 
 module.exports = AnalysisController;
