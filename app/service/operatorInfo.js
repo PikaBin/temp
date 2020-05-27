@@ -133,24 +133,28 @@ class OperatorInfo extends Service {
     const character = await this.ctx.query.character;
     const id = await this.ctx.query._id;
     data.password = await this.ctx.service.tools.md5(data.password);
-    // const idO = await this.ctx.service.tools.getObjectId(id);
+    const idO = await this.ctx.service.tools.getObjectId(id);
     // console.log(idO);
 
     // 判断什么角色
     if (character === 'o') {
-      const update = await Operator.updateOne({ _id: id }, { data });
+      const update = await Operator.findByIdAndUpdate(idO, data);
+      // const update = await Operator.updateOne({ _id: id }, { data });
       console.log('运营商：', update);
-      if (update.nModified !== 0) {
+      if (update) {
         return {
           status: '1',
           information: '修改密码成功',
         };
       }
-      return '修改失败';
+      return {
+        status: '0',
+        information: '修改失败',
+      };
     }
 
-    const update = await Staff.updateOne({ _id: id }, { data });
-    console.log('平台员工：', update);
+    const update = await Staff.findByIdAndUpdate(idO, data);
+    // console.log('平台员工：', update);
     if (update.nModified !== 0) {
       return {
         status: '1',

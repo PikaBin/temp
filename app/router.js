@@ -138,7 +138,7 @@ module.exports = app => {
   router.get('/manager/badworkorderonmonth', controller.analysis.badworkorderOnMonth); // 意外中止 本月
   router.get('/manager/badworkorderonyear', controller.analysis.badworkorderOnYear); // 意外中止 本年
   router.get('/manager/goodworkorder', controller.analysis.goodworkorder); // 顺利完成 总数
-  router.get('/manager/goodworkorderonmonth', controller.analysis.goodworkorderOnMonth); // 顺利完成 本月
-  router.get('/manager/goodworkorderonyear', controller.analysis.goodworkorderOnYear); // 顺利完成 本月
+  router.get('/manager/goodworkorderonmonth', controller.analysis.goodworkorderOnMonth); // 顺利完成 每月
+  router.get('/manager/goodworkorderonyear', controller.analysis.goodworkorderOnYear); // 顺利完成 本年
   router.get('/manager/partitonRank', controller.analysis.partitionRank); // 单品排行榜
 };
